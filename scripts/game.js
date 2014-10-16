@@ -359,8 +359,7 @@ var Game = function()
 			window.clearInterval(maintimer);
 			canvas.removeEventListener('keydown', changeState , false);
 			state = "play";
-			//_game.play();
-			creditsScreen.play();
+			_game.play();
 		};
 
 		_menuScreen.play   = function(){
