@@ -34,7 +34,7 @@ var CodeEditor = function () {
 					mode: 'javascript',
 					theme: "vibrant-ink",
 					indentUnit: 4,
-					lineWrapping:true,
+					lineWrapping:false,
 					dragDrop: false,
 					smartIndent: false,
 				});   
