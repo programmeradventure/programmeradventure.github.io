@@ -1,0 +1,61 @@
+//[mr-X] sleep mode set on ;)
+
+var startLevel = function(){
+	//robo-T
+	map.defineObject(
+	{
+		name:'robo-T',
+		color:'#ff0',
+		symbol:'R',
+		type:'dynamic',
+		behavior:function(me)
+		{
+			//use canMove(dir), move(dir) functions and MapScanner API
+			<editable>if(me.canMove('left'))
+			<editable>	me.move('left');
+		}
+	});
+	
+	var arr = [
+			 '###############'
+			,'#.....*...#b.e#'
+			,'#.#########...#'
+			,'#.........#...#'
+			,'#########.#...#'
+			,'#.........#...#'
+			,'#.#########...#'
+			,'#....q....#####'
+			,'#########.#...#'
+			,'#....b....#...#'
+			,'#.#########...#'
+			,'#.........#...#'
+			,'#########.#...#'
+			,'#.........#...#'
+			,'#.#########...#'
+			,'#.........#...#'
+			,'#########.#.###'
+			,'#R........#.#@#'
+			,'###############'
+		]
+		
+	var legend = {	
+		'@':'player'
+		,'.':'ground'
+		,'#':'block'
+		,'e':'exit'
+		,'*':function(){map.placeButton(6,1,12,7)}
+		,'q':function(){map.placeButton(5,7,12,17)}
+		,'b':'bonus'
+		,'R':'robo-T'
+	};
+
+	map.createFromGrid(arr,legend);
+}
+
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus', 3);
+	map.checkLevelOnCountObjectType('button', 2);
+	map.checkLevelOnCountObject('exit', 1);
+}
+var onExit = function(map) {};

@@ -1,0 +1,70 @@
+//[mr-X] Ну вот и солнечный свет.
+//[mr-X] Пройди через лес и не заблудись.
+//[mr-X] P.S. деревья двигаются.
+
+var startLevel = function(){
+
+	var getRandomInt = function (min, max){
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	};
+
+	map.defineObject({
+		name:'grass',
+		symbol:String.fromCharCode(0x0027),
+		color: '#0f0',
+		type:'ground',
+	});
+	
+	map.defineObject({
+		name:'tree',
+		symbol:'&',
+		color: '#0f0',
+		type:'moved',
+	});
+
+	var generateForest = function(){
+		var arr  = map.getObjectsCoords('grass');
+		var arr2 = map.getObjectsCoords('tree');
+		
+		for(var i = 0; i < arr.length; i++){
+			 if(Math.random() > 0.5)
+				map.placeObject('tree',arr[i].x,arr[i].y);
+		}
+		
+		arr = map.getObjectsCoords('grass');
+		var a = getRandomInt(0,arr.length-1);
+		arr.splice(a,1);
+		var b = getRandomInt(0,arr.length-1);
+		map.placeObject('bonus', arr[a].x, arr[a].y);
+		map.placeObject('bonus', arr[b].x, arr[b].y);
+	}
+		
+	for(var i = 0; i < 25; i++){
+		for(var j = 0; j < 20; j++){
+			map.placeObject('grass',i,j);
+		}
+	}
+	
+	for(var i = 10; i < 16; i++){
+		for(var j = 10; j < 16; j++){
+			if(i!== 10 || j !== 10 || i !== 15 || j !== 15)
+				map.placeObject('ground',i,j);
+		}
+	}
+
+	map.placePlayer(12,12);
+	map.placeObject('exit',1,1);
+		
+	generateForest();
+	var player = map.getPlayer();
+	player.setColor('#0ff');
+	<editable>
+	<editable>
+	<editable>
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus', 2);
+	map.checkLevelOnCountObject('exit', 1);
+}
+var onExit = function(map) {};

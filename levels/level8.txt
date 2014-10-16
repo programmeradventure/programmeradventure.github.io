@@ -1,0 +1,96 @@
+//[mr-X] Осторожно! Пол защищен сигнализацией.
+//[mr-X] Один неверный шаг и ты убит.
+//[mr-X] P.S. используй добытый телефон, клавиша Q, либо кнопка 'Phone' меню.
+
+var startLevel = function(){
+	var getRandomInt = function (min, max){
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+	
+	map.defineObject({
+					name:'red',
+					symbol:'.',
+					color: '#f00',
+					type:'ground', 
+					placeItem:false,
+					placeGround:false,
+					onPlayerCollision:function(player, me){
+						if(player.getColor() !== me.color)
+							player.kill();
+					}
+				});
+
+	map.defineObject({
+					name:'green',
+					symbol:'.',
+					color: '#0f0',
+					type:'ground',
+					placeItem:false,
+					placeGround:false,
+					onPlayerCollision:function(player, me){
+						if(player.getColor() !== me.color)
+							player.kill();
+					}
+				 });
+
+	map.defineObject({
+					name:'blue',
+					symbol:'.',
+					color: '#00f',
+					type:'ground',
+					placeItem:false,
+					placeGround:false,
+					onPlayerCollision:function(player, me){
+						if(player.getColor() !== me.color)
+							player.kill();
+					}
+				});
+
+	//mines
+	for(var i = 1; i < 4 ; i++){
+		map.placeObject('mine', 16, i);
+		map.placeObject('mine', 3, 19 - i);
+	}
+	for(var i = 17; i < 19 ; i++){
+		map.placeObject('mine', i, 3);
+		map.placeObject('mine', i-16, 16);
+	}
+	//objects
+	map.placeObject('bonus', 18, 1);
+	map.placeObject('bonus', 1, 18);
+	map.placeObject('exit', 18, 18);
+	map.placePlayer(1, 1); 
+
+	//room
+	for(var i = 0; i < 20 ; i++){
+		for(var j = 0; j < 20; j++){
+			if(map.whoIs(i,j) === 'null')
+			{
+				if(i === 0 || j === 0 || i === 19 || j === 19)
+					map.placeObject('block', i, j);
+				else
+				{
+					var n = getRandomInt(1,100);
+					if(n<=33)
+						map.placeObject('red', i, j);
+					else if(n>33 && n<=66)
+						map.placeObject('green', i, j);
+					else if(n>66)
+						map.placeObject('blue', i, j);
+				}
+			}
+		}
+	};
+
+	var player = map.getPlayer();
+	player.setPhoneCallback(function(){ //use Q or Phone button
+		<editable>player.setColor('#0ff'); 
+		<editable>
+	});
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus', 2);
+	map.checkLevelOnCountObject('exit', 1);
+}
+var onExit = function(map) {};

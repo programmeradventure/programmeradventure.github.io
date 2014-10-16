@@ -1,0 +1,49 @@
+//[mr-X] Ну что сказать - собака она и есть собака.
+//[mr-X] С ней не договоришься.
+//[mr-X] P.S. а я напоминал про бонусы ;)
+
+var startLevel = function(){
+
+map.defineObject({
+	name:'dog',
+	symbol:'d',
+	type:'dynamic',
+	color:'#ff0',
+	onPlayerCollision:function(player,me){
+		if(player.getBonusCount() >= 20){
+			me.move('up');
+			map.showMessage('[собака] Проходите!!!','#fff');
+		}
+		else
+			map.showMessage('[собака] Нужно не менее 20 бонусов!!!','#fff');
+	}
+});
+
+var arr = [
+			 '#########      '
+			,'#.......#      '
+			,'#..###..#      '
+			,'#.##b##.#      '
+			,'#.##d##.#  ####'
+			,'#.......###..*#'
+			,'#.......#...e.#'
+			,'#...@...###...#'
+			,'#.......#  ####'
+			,'#########      '
+		  ]
+		
+		var legend = {
+			'@':'player'
+			,'.':'ground'
+			,'#':'block'
+			,'e':'exit'
+			,'':'block'
+			,'*':'bonus'
+			,'b':function(){map.placeButton(4,3,8,6)},'d':'dog'
+		};
+		
+		map.createFromGrid(arr,legend);
+}
+//validator
+var validate = function(map) {};
+var onExit   = function(map) {};

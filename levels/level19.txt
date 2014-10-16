@@ -1,0 +1,127 @@
+//[mr-X] Дойти до 19-го уровня и быть съеденным крокодилом это просто мечта ;)
+//[mr-X] Переплыви море, я буду ждать тебя на другом берeгу.
+//[mr-X] P.S. крокодилов лучше избегать ;)
+
+var startLevel = function(){
+	var getRandomInt = function (min, max){
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	};
+	
+	var moveToward = function(obj,trg) {
+		var target   = obj.findNearestToPoint(trg);
+		var leftDist = obj.getX() - target.x;
+		var upDist   = obj.getY() - target.y;
+		var direction;
+		
+		if (upDist == 0 && leftDist == 0) return;
+		
+		if (upDist > 0 && upDist >= leftDist)
+			direction = 'up';
+		else if (upDist < 0 && upDist < leftDist)
+			direction = 'down';
+		else if (leftDist > 0 && leftDist >= upDist)
+			direction = 'left';
+		else 
+			direction = 'right';
+
+		obj.move(direction);
+	}
+	
+	map.defineObject({
+		name:'grass',
+		symbol:String.fromCharCode(0x0027),
+		color: '#0f0', type:'ground'
+	});
+	
+	map.defineObject({
+		name:'crocodyle',
+		symbol:'K',
+		color: '#0f0',
+		type:'dynamic',
+		behavior:function(me){
+			var player = map.getPlayer();
+			if(player.getY() < 15)
+				moveToward(me,'player');
+		},
+		onPlayerCollision:function(player, me){
+			player.kill(me);
+		},
+		onDead: function(){
+			var waters = map.getObjectsCoords('water');
+			for(var i = 0; i < 2; i++){
+				var a = getRandomInt(0,waters.length-1);
+				map.placeObject('crocodyle', waters[a].x, waters[a].y);
+				waters.splice(a,1);
+			}
+		}
+	});
+
+	map.defineObject({
+		name:'water',
+		placeOnMe:false,
+		symbol:'~',
+		color: '#0ff',
+		type:'ground',
+		onCollision:function(object){
+			if(object.name === 'crocodyle')
+			return;
+			if(object.type !== 'dynamic' && object.name !== 'player'){
+				object.kill();
+				return;
+			}
+			if(!object.hasItem('boat'))
+				object.kill('утонул в воде');
+		}
+	});
+	
+	map.defineObject({name:'tree',symbol:'&',color: '#0f0',type:'moved'});
+
+	var generateForest = function(){
+		for(var i = 0; i < 25; i++){
+			for(var j = 15; j < 20; j++){
+				if(map.whoIs(i,j)==='null')
+				{
+				   map.placeObject('grass',i,j);
+					 if(Math.random() > 0.5)
+						map.placeObject('tree',i,j) 
+				}
+			}
+		}
+	}
+	
+	map.placeObject('bonus',5, 5);
+	map.placeObject('bonus',10, 10);
+	map.placeObject('crocodyle', 0, 2);
+	map.placeObject('crocodyle', 2, 1); 
+	map.placeObject('grass',12,15);
+	map.placePlayer(12,15); 
+	map.placeObject('exit',1,1);
+	
+	var wtrs = [];
+	for(var i = 0; i < 25; i++){
+		for(var j = 0; j < 15; j++){
+			if(map.whoIs(i,j) === 'null'){
+				map.placeObject('water', i, j);
+				wtrs.push({x:i,y:j});
+			}
+		}
+	}
+
+	for(var i = 0; i < 2; i++){
+		var a = getRandomInt(0, wtrs.length-1);
+		map.placeObject('crocodyle', wtrs[a].x, wtrs[a].y);
+		wtrs.splice(a,1);
+	}
+		
+	generateForest();
+	var player = map.getPlayer();
+	player.setColor('#0ff');    
+	<editable>
+	<editable>
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus', 2);
+	map.checkLevelOnCountObject('exit', 1);
+}
+var onExit = function(map) {};

@@ -1,0 +1,39 @@
+//[mr-X] Хорошо, теперь посмотрим, как ты справишься с более сложной задачей.
+//[mr-X] P.S. Собирай звезды, они тебе пригодятся.
+
+var startLevel = function(){
+	var arr = [
+		 '###############'
+		,'#*m.........m*#'
+		,'#mm.........mm#'
+		,'#.............#'
+		,'#.............#'
+		,'#.............#'
+		,'#.............#'
+		,'#......@.....e#'
+		,'#.............#'
+		,'#.............#'
+		,'#.............#'
+		,'#.............#'
+		,'#mm.........mm#'
+		,'#*m.........m*#'
+		,'###############'
+	];
+	var legend = {'#':'block','@':'player','.':'ground','*':'bonus','m':'mine','e':'exit'};
+	map.createFromGrid(arr,legend);    
+	<editable>
+	for(var i = 5; i < 10 ; i++){
+		for(var j = 5; j < 10; j++){
+			if(i === 5 || j === 5 || i === 9 || j === 9){
+				map.placeObject('mine', i, j);
+			}
+		}
+	}
+	<editable>
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus', 4);
+	map.checkLevelOnCountObject('exit', 1);
+}
+var onExit = function(map) {};

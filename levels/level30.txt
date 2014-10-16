@@ -1,0 +1,227 @@
+//[Master] Ну вот мы и встретились!
+//[Master] Сначала я тебя убью, затем сделаю роботом,а затем...затем
+//[Master] еще не придумал, но в любом случае это принесет тебе страдания!
+//[Master] И ты будешь подчиняться мне вечно!
+//[Master] А-ха-ха-ха!
+//[Master] УМРИ ЖЕ !
+
+ var startLevel = function(){
+	var getRandomInt = function (min, max){
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	};
+	
+	var moveToward = function(obj,trg) {
+		var target   = obj.findNearestToPoint(trg);
+		var leftDist = obj.getX() - target.x;
+		var upDist   = obj.getY() - target.y;
+		var direction;
+		
+		if (upDist == 0 && leftDist == 0) return;
+		
+		if (upDist > 0 && upDist >= leftDist)
+			direction = 'up';
+		else if (upDist < 0 && upDist < leftDist)
+			direction = 'down';
+		else if (leftDist > 0 && leftDist >= upDist)
+			direction = 'left';
+		else 
+			direction = 'right';
+
+		obj.move(direction);
+	};
+	
+	map.defineObject({'name':'grblk','color':'#0f0','symbol':'#','type':'moved'});
+	//bullet
+	map.defineObject({
+		name:'bullet',  symbol:'*',
+		color: '#f0f', type:'projectile',
+		behavior:function(me){
+			moveToward(me,'player');
+		}
+	});
+	//red-laser 
+	map.defineObject({
+		'name':'laser',
+		'symbol':'-',
+		'color':'#f00',
+		'type':'static',
+		onPlayerCollision:function(player,me){
+			player.kill(me);
+		}
+	});
+	//blue-laser
+	map.defineObject({
+		'name':'laser2',
+		'symbol':'|',
+		'color':'#00f',
+		'type':'static',
+		onPlayerCollision:function(player,me){
+			player.kill(me);
+		}
+	});
+	//neutral zone
+	map.defineObject({
+		name:'neutral',  symbol:'*',
+		color: '#f0f', type:'ground',
+		placeItem:   false,
+		placeGround: false,
+		placeMoved:  false,
+	});
+	//MASTER
+	map.defineObject({
+		'name':'MASTER',
+		'symbol':'@',
+		'color':'#f00',
+		'type':'dynamic',
+		 undead: true,
+		 behavior:function(me){
+			var grd = map.getObjectsCoords('ground');
+			var a = getRandomInt(0,grd.length - 1);
+			grd.splice(a,1);
+			var b = getRandomInt(0,grd.length - 1);
+
+			if(grd[a] !== undefined)
+				map.placeObject('bullet', grd[a].x, grd[a].y);  
+			if(grd[b] !== undefined) 
+				map.placeObject('bullet', grd[b].x, grd[b].y);
+		},
+		onPlayerCollision:function(player,me){
+			player.kill(me);
+		},
+		onDead:function(me){
+			var grd = map.getObjectsCoords('ground');
+			for(var i = 0; i < 5 ; i++)
+				map.placeObject('bonus', grd[i].x, grd[i].y);
+			map.placeObject('exit', me.getX(), me.getY());
+		}
+	});
+	//prisoner with trojan
+	map.defineObject({
+		'name':'prisoner1',
+		'symbol':'@',
+		'color':'#ff0',
+		'type':'dynamic',
+		onCollision:function(object, me){
+			if(me.gived === undefined)
+				me.gived = false;		
+			if(!me.gived){
+				me.gived = true;
+				me.giveItem('trojan', object);
+				me.giveItem('bonus', object);
+				map.showMessage('[prisoner] я дам тебе trojan!','#fff');
+			}
+			else
+				map.showMessage(
+				'[prisoner] у меня ничего больше нет...','#fff');
+		},
+		onDead:function(me){
+			map.placeObject('bonus',me.getX(),me.getY());
+		}
+	});
+	//prisoner with virus
+	map.defineObject({
+		'name':'prisoner2',
+		'symbol':'@',
+		'color':'#0ff',
+		'type':'dynamic',
+		 onCollision:function(object, me){
+			if(!me.gived){  
+				me.gived = true;
+				me.giveItem('virus', object);
+				me.giveItem('bonus', object);
+				map.showMessage('[prisoner] я дам тебе virus!','#fff');
+			}
+			else
+				map.showMessage(
+				'[prisoner] у меня ничего больше нет...','#fff');
+		},
+		onDead:function(me){
+			map.placeObject('bonus',me.getX(),me.getY());
+		}
+	});
+	
+	map.defineObject({
+		'name':'guard-1',
+		'symbol':'R',
+		'color':'#0f0',
+		'type':'dynamic',
+		behavior:function(me){
+			<editable>
+			<editable>
+		},
+		onPlayerCollision:function(player,me){
+			me.giveItems(player);
+		}
+	});
+	
+	map.defineObject({
+		'name':'guard-2',
+		'symbol':'R',
+		'color':'#ff0',
+		'type':'dynamic',
+		behavior:function(me){
+			<editable>
+			<editable>
+		},
+			onPlayerCollision:function(player,me){
+				me.giveItems(player);
+		}
+	});
+	
+	var arr = [
+		 '##########      ##########'  
+		,'#********#      #,*******#'
+		,'#mmm***g*#      #,*,*,,,*#'
+		,'#mbm*****#      #,*,*,K,*#'
+		,'#mmm*****#      #,*,*,*,*#'
+		,'#****j*N*#      #,*,,,*,*#'
+		,'#********#      #,*****,*#'
+		,'##########################'
+		,'#...............|........#'
+		,'#...............|........#'
+		,'#...............|........#'
+		,'#.@.............|......M.#'
+		,'#...............|........#'
+		,'#...............|........#'
+		,'#...............|........#'
+		,'#--------########--------#'
+		,'#Y*******#      #*******R#'
+		,'#********#      #********#'
+		,'#***A****#      #****B***#'
+		,'#*****T**#      #**S*****#'
+		,'##########      ##########'
+	];
+	var legend =
+	{
+		'#':'block','@':'player','.':'ground','-':'laser'
+		,'m':'mine','j':'movedBlock','|':'laser2','*':'bonus'
+		,'e':'exit','M':'MASTER','g':'grblk','*':'neutral'
+		,'A':'prisoner2','B':'prisoner1','R':'guard-1','Y':'guard-2'
+		,'b':function(){map.placeColorButton('btn',2,3,16,11,'#0f0')}
+		,'T':function(){map.placeTeleport(6,19,24,6)}
+		,'S':function(){map.placeTeleport(19,19,8,6)}
+		,'N':function(){map.placeTeleport(7,5,5,13)}
+		,'K':function(){map.placeTeleport(22,3,5,12)}		
+	};
+	map.createFromGrid(arr,legend);
+	<editable>
+	<editable>
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus',  5);
+	map.checkLevelOnCountObject('exit',   1);
+	map.checkLevelOnCountObject('virus',  0);
+	map.checkLevelOnCountObject('trojan', 0);
+	map.checkLevelOnCountObjectType('moved',   6);
+	map.checkLevelOnCountObjectType('dynamic', 6);
+	map.checkLevelOnCountObjectType('static', 160);
+	map.checkLevelOnCountObject('teleport', 4);
+}
+var onExit = function(map) {
+	if(map.getObjectCount('MASTER') === 0)
+		return true;
+	else
+		map.showMessage('MASTER не убит.','#fff');
+	return false;
+};

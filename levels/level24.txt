@@ -1,0 +1,108 @@
+//[master] А это мой любимчик - программист с ником cool-][! 
+//[master] Он единственный программер, который прошел эту игру почти до конца.
+//[master] Я его клонировал и подарил ему бессмертие.
+//[master] Он убьет любого, кто посмеет претендовать на его место.
+//[master] А-ха-ха-ха!!!.
+//[mr-X] П-с-с. Это я. Мастер убьет меня, если узнает, что я тебе помогаю.
+//[mr-X] У этого cool-][ есть одна слабость - trojan.
+//[mr-X] P.S. используй trojan, API тебе в помощь.
+
+var startLevel = function(){
+
+	var moveToward = function(obj,trg) {
+		var target   = obj.findNearestToPoint(trg);
+		var leftDist = obj.getX() - target.x;
+		var upDist   = obj.getY() - target.y;
+		var direction;
+		
+		if (upDist == 0 && leftDist == 0) return;
+		
+		if (upDist > 0 && upDist >= leftDist)
+			direction = 'up';
+		else if (upDist < 0 && upDist < leftDist)
+			direction = 'down';
+		else if (leftDist > 0 && leftDist >= upDist)
+			direction = 'left';
+		else
+			direction = 'right';
+
+		obj.move(direction);
+	};
+
+	map.defineObject({
+		name:'bulletDown', symbol:'*',
+		color: '#f00', type:'projectile',
+		behavior: function(me){
+			me.move('down');
+		}
+	});
+	
+	map.defineObject({
+		'name':'cool-][',
+		'symbol':'@',
+		'color':'#ccc',
+		'type':'dynamic',
+		 undead: true,
+		 behavior:function(me){
+			moveToward(me,'player');
+			map.placeObject('bulletDown',8,3);
+			map.placeObject('bulletDown',11,3);
+			map.placeObject('bulletDown',14,3);
+			map.placeObject('bulletDown',17,3);
+		 }, 
+		 onPlayerCollision:function(player,me){
+			player.kill(me);
+		 },
+		 onDead:function(){
+			if(map.getObjectCount('cool-][') === 0)
+			   map.placeObject('exit',5,2);
+		 }
+	});
+
+	var arr = [
+		 '#########################'
+		,'#########################'
+		,'#####a......a......a#####'
+		,'#####...............#####'
+		,'#####...............#####'
+		,'#####...............#####'
+		,'#####.......@.......#####'
+		,'#####a.............a#####'
+		,'#####...............#####'
+		,'#####........*......#####'
+		,'#####...............#####'
+		,'#####...............#####'
+		,'#####a......a......a#####'
+		,'#########################'
+		,'#########################'
+	];
+
+	var legend = { '#':'block'
+				  ,'@':'player'
+				  ,'.':'ground'
+				  ,'a':'cool-]['
+				  ,'*':'trojan'
+				 };
+				 
+	map.createFromGrid(arr,legend);
+	//trojan use example:
+	//var trojan = map.createTrojan();
+	//trojan.setTarget(<nameObject>);
+	//trojan.change?????() read more in API
+	<editable>
+	<editable>
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus', 3);
+	map.checkLevelOnCountObject('exit',  1);
+	map.checkLevelOnCountObjectType('dynamic', 9);
+}
+var onExit = function(map) {
+	if(map.getObjectCount('cool-][') === 0)
+		return true;
+	else
+		map.showMessage('cool-][ не убит.','#fff');
+
+	return false;
+};

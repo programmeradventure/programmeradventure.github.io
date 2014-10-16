@@ -1,0 +1,119 @@
+//[mr-X] no comments mode on;
+
+var startLevel = function(){
+
+	map.defineObject({
+		name:'air',  symbol:'-',
+		color: '#000', type:'ground'
+	});
+	
+	map.defineObject({
+		name:'bulletUp', symbol:'*',
+		color: '#f00', type:'projectile',
+		behavior: function(me){
+			me.move('up');
+		}
+	});
+	
+	map.defineObject({
+		name:'bulletDown', symbol:'*',
+		color: '#f00', type:'projectile',
+		behavior: function(me){
+			me.move('down');
+		}
+	});
+	
+	var shot = function(){
+		map.placeObject('bulletUp',10,17);
+		map.placeObject('bulletDown',15,2);
+	};
+	
+	map.defineObject({
+		name:'trap',  symbol:'^',
+		color: '#0f0', type:'static',
+		onPlayerCollision:function(player,me){
+			player.kill('Упал на шипы.');
+		}
+	});
+	
+	map.defineObject({
+		name:'trap2',  symbol:'v',
+		color: '#0f0', type:'static',
+		onPlayerCollision:function(player,me){
+			player.kill('Упал на шипы.');
+		}
+	});
+	
+	map.defineObject({
+		name:'trap3',  symbol:'>',
+		color: '#0f0', type:'static',
+		onPlayerCollision:function(player,me){
+			player.kill('Упал на шипы.');
+		}
+	});
+	
+	map.defineObject({
+		name:'trap4',  symbol:'<',
+		color: '#0f0', type:'static',
+		onPlayerCollision:function(player,me){
+			player.kill('Упал на шипы.');
+		}
+	});
+	
+	var arr = [
+		 '#########################'
+		,'vvvvvvvvvvvvvvvvvvvvvvvvv'
+		,'-------------------------'
+		,'------------*------------'
+		,'---------------------####'
+		,'---------------------#---'
+		,'-@-------------------+--e'
+		,'########>-------<########'
+		,'########>-------<########'
+		,'########>-------<########'
+		,'########>-------<########'
+		,'########>*----*-<########'
+		,'########>-------<########'
+		,'########>-------<########'
+		,'########>---k---<########'
+		,'########>-------<########'
+		,'########>-------<########'
+		,'########---------########'
+		,'########^^^^^^^^^########'
+		,'#########################'
+	];
+
+	var legend = { '#':'block'
+				  ,'@':'player'
+				  ,'-':'air'
+				  ,'^':'trap'
+				  ,'v':'trap2'
+				  ,'>':'trap3'
+				  ,'<':'trap4'
+				  ,'*':'bonus'
+				  ,'e':'exit'
+				  ,'k':'key'
+				  ,'+':'door'
+				};
+	map.createFromGrid(arr,legend);
+
+	<editable>
+	<editable>
+	
+	var gravity = function(){
+		player.move('down');
+	}
+	
+	var player = map.getPlayer();
+	map.setTimer(gravity, 150);  
+	map.setTimer(shot, 1000);
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('key',   1);
+	map.checkLevelOnCountObject('bonus', 3);
+	map.checkLevelOnCountObject('exit',  1);
+	map.checkLevelOnCountObjectType('static',  310);
+	map.checkLevelOnCountObjectType('dynamic', 1);
+}
+var onExit = function(map) {};

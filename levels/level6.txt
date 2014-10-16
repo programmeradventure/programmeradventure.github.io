@@ -1,0 +1,74 @@
+//[mr-X] Посмотри на этих охранников, это же отъявленные убийцы.
+//[mr-X] Тебе срочно нужно что-то придумать, иначе они тебя убьют.
+//[mr-X] P.S. удачи ;)
+
+var startLevel = function(){
+	//AI :)
+	var moveToward = function(obj,trg) {
+		var target   = obj.findNearestToPoint(trg);
+		var leftDist = obj.getX() - target.x;
+		var upDist   = obj.getY() - target.y;
+		var direction;
+		
+		if (upDist == 0 && leftDist == 0)
+			return;
+
+		if (upDist > 0 && upDist >= leftDist)
+			direction = 'up';
+		else if (upDist < 0 && upDist < leftDist)
+			direction = 'down';
+		else if (leftDist > 0 && leftDist >= upDist)
+			direction = 'left';
+		else
+			direction = 'right';
+
+		obj.move(direction);
+	}
+
+	map.defineObject({
+		name:'guard',
+		symbol:'G',
+		color: '#f00', 
+		type:'dynamic',
+		onPlayerCollision:function(player, me){
+			player.kill(me);
+		},
+		behavior:function(me){
+			moveToward(me,'player');
+		} 
+	}); 
+
+	var arr = [
+		 '############'
+		,'#....*.....#'
+		,'#..........#'
+		,'#..........#'
+		,'#..........#'
+		,'#.......G..#'
+		,'#.@.....G.e#'
+		,'#.......G..#'
+		,'#..........#'
+		,'#..........#'
+		,'#.......*..#'
+		,'############'
+	]; 
+	   
+	var legend = {	'#':'block'
+				  ,'@':'player'
+				  ,'.':'ground'
+				  ,'*':'bonus'
+				  ,'G':'guard'
+				  ,'e':'exit'
+				 };
+	map.createFromGrid(arr,legend);
+	<editable>
+	<editable>
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('exit' , 1);
+	map.checkLevelOnCountObject('bonus', 2);
+}
+var onExit = function(map) {
+	return map.checkLevelOnInventory('computer');
+};

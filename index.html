@@ -1,0 +1,82 @@
+<!DOCTYPE html> 
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<link rel="stylesheet" href="codemirror/codemirror.css">
+		<link rel="stylesheet" href="codemirror/theme/vibrant-ink.css">
+		<link rel="stylesheet" href="codemirror/theme/elegant.css">
+	</head>
+	<body>
+		<div id="container">  
+			 <div id="prevLevelsolutionURL"></div>
+			 
+			 <div id="notepad">
+					<div id="notepad_title">NOTEPAD</div>
+					<div id="notepad_body"><textarea id="note"></textarea></div>
+					<input id="btnSaveNote"  class = "gamebutton" type="button" value="Save" onclick="game.saveNote()">
+					<input id="btnCloseNote" class = "gamebutton" type="button" value="Exit" onclick="game.closeNotepad()">
+			 </div>
+			 <div id="api_book">
+					<div id="api_book_title">API_BOOK <input id="btnCloseAPI" class = "gamebutton" type="button" value="X" onclick="game.closeApiBook()"></div>
+					<div id="api_book_body">
+						<div id = "api_title" class="api_book_title"></div>
+						<div id = "api_note"  class="api_book_note"></div>
+					</div>
+			 </div>
+			 <div id="menu">
+					<div id="menu_title">MENU <input id="btnCloseMenu" type="button" value="X" onclick="game.closeMenu()"></div>
+					<div id="menu_body"></div>
+			 </div>
+			 <div id="panes">
+				<div id ="audioPane">
+					 <div><img id="soundIcon" src="images/on.png">
+					 <div id="soundName"></div>
+					 </div>
+					 <audio id="soundPlayer"   class = "audioPlayer">
+					 <audio id="ambientPlayer" loop class = "audioPlayer">tag <audio> not support!</audio>
+				</div>
+				<div id="screenPane">
+					<div>
+						<div id = "levelTitle"></div>
+						<div id = "turnsOnLevel"></div>
+						<div id = "turnsCounter"></div>
+					</div>
+					<canvas tabindex='1' id="lay1" width="600" height="608" class="levelCanvas"></canvas>
+					<div id = "levelFooter"></div>
+					<div id = "levelPassword">
+					<b>Password:</b> <input id = 'password' type = 'text' value = '********'></input>
+					<input id="btnSetLevel" type="button" value="GO!">
+					<input id="btnClearSaves" type="button" value="clear all saves" onclick="localStorage.clear(); alert('Saves cleared')">
+					</div>
+				</div>
+				<div id="editorPane">
+					 <div id="codePane"><textarea id="code"></textarea></div>
+					 <div id="levelPane"><textarea id="levelEditor"></textarea></div>
+					 <div id="buttonPane">
+						<input id="btnAPI"     class = "gamebutton" type="button" value="[^1] API"     onclick="game.showAPI()">
+						<input id="btnFocus"   class = "gamebutton" type="button" value="[^2] Focus"   onclick="game.focus()">
+						<input id="btnNotepad" class = "gamebutton" type="button" value="[^3] Notepad" onclick="game.notepad()">
+						<input id="btnExecute" class = "vipButton"  type="button" value="[^4] Execute" onclick="game.userExecute()">
+						<input id="btnReset"   class = "gamebutton" type="button" value="[^5] Reset"   onclick="game.reset()">
+						<input id="btnLoad"    class = "gamebutton" type="button" value="Load"         onclick="game.load()">
+						<input id="btnPhone"   class = "gamebutton" type="button" value="[Q] Phone"    onclick="game.phone()">
+						<input id="btnClock"   class = "gamebutton" type="button" value="[C] Clock"    onclick="game.clock()">
+						<input id="btnMenu"    class = "gamebutton" type="button" value="[Esc] Menu"   onclick="game.showMenu()">
+					 <div>
+				</div>  
+			 </div>
+		 </div>
+		 <script src="codemirror/codemirror.js" charset="UTF-8"></script>
+		 <script src="editor/LevelEditor.js" charset="UTF-8"></script>
+		 <script src="editor/CodeEditor.js" charset="UTF-8"></script>
+		 <script src="codemirror/javascript.js" charset="UTF-8"></script>
+		 <script src="scripts/Localization.js" charset="UTF-8"></script>
+		 <script src="scripts/game.js" charset="UTF-8"></script>
+		 <script>
+				var game = new Game();
+				game.play();
+		 </script>
+	</body>
+</html>  
+

@@ -1,0 +1,88 @@
+//[mr-X] Вижу управлять одним роботом для тебя не такая сложная задача. 
+//[mr-X] А если их будет больше ;)
+//[mr-X] Тебе необходимо проявить таланты по програмированию AI.
+//[mr-X] Только слаженная работа роботов сможет выполнить это задание.
+//[mr-X] P.S. не забывай про звезды, они тебе очень скоро пригодятся.
+
+var startLevel = function(){
+	//robo-T1
+	map.defineObject({
+		name:'robo-T1',
+		symbol:'R',
+		color:'red',
+		type:'dynamic',
+		behavior: function(me){
+			<editable>if(me.canMove('right'))
+			<editable>  me.move('right');
+			<editable>
+		}
+	});
+	//robo-T2
+	map.defineObject({
+		name:'robo-T2',
+		symbol:'R',
+		color:'yellow',
+		type:'dynamic',
+		behavior: function(me){
+			<editable>if(me.canMove('left'))
+			<editable>  me.move('left');
+			<editable>
+		}
+	});  
+	//note
+	map.defineObject({
+		name:'note',
+		symbol:'!',
+		color:'#f0f',
+		type:'ground',
+		onPlayerCollision: function(player, me){
+			map.showMessage(
+			'[надпись] Помогите роботам открыть вам двери...','#0f0');
+		}
+	});
+	
+	var arr = [
+		 '#################'
+		,'#..b.#....#.*..e#'
+		,'#....#....#.....#'
+		,'#....#....#.....#'
+		,'#....#...*#.....#'
+		,'#....#....#.....#'
+		,'#....#....#.....#'
+		,'#..*.#.c..#.....#'
+		,'#################'
+		,'#....#....#.....#'
+		,'#....#..*.#.....#'
+		,'#....#....#.....#'
+		,'#..*.#....#.....#'
+		,'#....#....#.....#'
+		,'#....#....#.....#'
+		,'#a..R#...V#.@..!#'
+		,'#################'
+	];
+	
+	var legend = {
+		 '#':'block'
+		,'@':'player'
+		,'.':'ground'
+		,'*':'bonus'
+		,'R':'robo-T1'
+		,'V':'robo-T2'
+		,'e':'exit'
+		,'a':function(){map.placeButton(1,15,6,8)}
+		,'b':function(){map.placeButton(3,1,13,8)}
+		,'c':function(){map.placeButton(7,7,2,8)}
+		,'!':'note'
+	}
+
+	map.createFromGrid(arr,legend);
+}
+
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObjectType('dynamic', 3);
+	map.checkLevelOnCountObjectType('button', 3);
+	map.checkLevelOnCountObject('bonus', 5);
+	map.checkLevelOnCountObject('exit', 1);
+}
+var onExit = function(map) {};

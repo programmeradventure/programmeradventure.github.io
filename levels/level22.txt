@@ -1,0 +1,66 @@
+//[master] Ты нашел мое убежище.
+//[master] P.S. Я жду тебя.
+
+var startLevel = function(){
+
+	map.defineObject({
+		name:'air',  symbol:'-',
+		color: '#000', type:'ground'
+	});
+	
+	map.defineObject({
+		name:'trap',  symbol:'^',
+		color: '#0f0', type:'static',
+		onPlayerCollision:function(player,me){
+			player.kill('Упал на шипы.');
+		}
+	});
+
+	var arr = [
+		 '-------------------------'
+		,'------*-----------*------'
+		,'-------------------------'
+		,'-------------------------'
+		,'------------*------------'
+		,'-------------------------'
+		,'-@----------------------e'
+		,'########*-------*########'
+		,'########---------########'
+		,'########---------########'
+		,'########---------########'
+		,'########---------########'
+		,'########---------########'
+		,'########---------########'
+		,'########---------########'
+		,'########---------########'
+		,'########---------########'
+		,'########---------########'
+		,'########^^^^^^^^^########'
+		,'#########################'
+	];
+
+	var legend = { '#':'block'
+				  ,'@':'player'
+				  ,'-':'air'
+				  ,'^':'trap'
+				  ,'*':'bonus'
+				  ,'e':'exit'
+				};
+	map.createFromGrid(arr,legend);
+	
+	<editable>
+	<editable>
+	
+	var gravity = function(){
+		player.move('down');
+	}
+
+	var player = map.getPlayer();
+	map.setTimer(gravity, 150);
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus', 5);
+	map.checkLevelOnCountObject('exit',  1);
+}
+var onExit = function(map) {};

@@ -1,0 +1,46 @@
+//[mr-X] О! Я вижу ты сделал правильный выбор.
+//[mr-X] Продолжай в том же духе и мы сбежим отсюда.
+//[mr-X] P.S. Эти синие блоки здорово взрывают мины. Попробуй.
+
+var startLevel = function(){
+	var room_size = 6;
+	//room
+	for(var i = 0; i < room_size * 2 ; i++){
+		for(var j = 0; j < room_size; j++){
+			if(i === 0 || 
+				j === 0 || i === room_size * 2-1 || j === room_size - 1){
+				map.placeObject('block', i, j);
+			}
+			else{
+				map.placeObject('ground', i, j);
+			}
+		}
+	};
+	<editable>
+	//mines
+	for(var i = 1; i < 5 ; i++){
+		map.placeObject('mine', 5, i);
+		map.placeObject('mine', 8, i);
+	}
+	<editable>
+	//wall
+	for(var i = 1; i < 5 ; i++)
+		map.placeObject('block', 9, i);
+	
+	map.placePlayer(2,2);
+	map.placeButton(7,4,9,1);
+	map.placeObject('bonus', 10, 1);
+	map.placeObject('movedBlock',3 , 2);
+	map.placeObject('exit', 10, 3);
+	map.placeObject('notepad', 6, 3);
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus',1);
+	map.checkLevelOnCountObject('exit',1);
+	map.checkLevelOnCountObjectType('moved',1);
+}
+var onExit = function(map) {
+	map.checkLevelOnInventory('notepad');
+	map.checkLevelOnInventory('computer');
+};

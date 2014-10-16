@@ -1,0 +1,103 @@
+//[mr-X] Ого! А речка-то оказалась шире чем я думал :)
+var startLevel = function(){
+
+	var getRandomInt = function (min, max){
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	};
+	
+	//AI ;)
+	var moveToward = function(obj,trg) {
+		var target   = obj.findNearestToPoint(trg);
+		var leftDist = obj.getX() - target.x;
+		var upDist   = obj.getY() - target.y;
+		var direction;
+		
+		if (upDist == 0 && leftDist == 0) return;
+		
+		if (upDist > 0 && upDist >= leftDist)
+			direction = 'up';
+		else if (upDist < 0 && upDist < leftDist)
+			direction = 'down';
+		else if (leftDist > 0 && leftDist >= upDist)
+			direction = 'left';
+		else 
+			direction = 'right';
+
+		obj.move(direction);
+	}
+
+//crocodyle
+	map.defineObject({
+		name:'crocodyle',
+		symbol:'K',
+		color: '#0f0',
+		type:'dynamic',
+		behavior:function(me){
+			var player = map.getPlayer();
+			if(player.getY() < 15)
+				moveToward(me,'player');
+		},
+		onPlayerCollision:function(player, me){
+			player.kill(me);
+		}
+	});
+//water
+	map.defineObject({
+		name:'water',
+		placeOnMe:false,
+		symbol:'~',
+		color: '#0ff',
+		type:'ground',
+		onCollision:function(object){
+			if(object.name === 'crocodyle')
+			return;
+					
+			if(object.type !== 'dynamic' && object.name !== 'player'){
+				object.kill();
+				return;
+			}
+			
+			if(!object.hasItem('boat'))
+				object.kill('утонул в воде');
+		}
+	});
+	
+	map.placeObject('bonus',11, 1);
+	map.placeObject('bonus',13, 1);
+
+	for(var i = 0; i < 25; i++){
+		if(Math.random() > 0.5){
+			map.placeObject('mine',i,15);
+			map.placeObject('mine',i,4);
+		}
+	}
+	var wtr  = [];	
+	//fill water
+	for(var i = 0; i < 25; i++){
+		for(var j = 0; j < 20; j++){
+			if(map.whoIs(i,j) === 'null'){
+				map.placeObject('water', i, j);
+				if(j > 4 && j < 15)
+					wtr.push({x:i,y:j});
+			}
+		}
+	}
+	//crocodyles
+	for(var i = 0; i < 7; i++){
+		var a = getRandomInt(0, wtr.length-1);
+		map.placeObject('crocodyle', wtr[a].x, wtr[a].y);
+		wtr.splice(a,1);
+	}	
+	map.placeObject('exit',12,1);
+	map.placePlayer(12,19);  
+	var player = map.getPlayer();
+	player.setColor('#0ff');
+	<editable>
+	<editable>
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus', 2);
+	map.checkLevelOnCountObject('exit', 1);
+}
+var onExit = function(map) {};

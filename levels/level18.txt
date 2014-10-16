@@ -1,0 +1,115 @@
+//[mr-X] Вот незадача, перед вами река, а плавать вы не умеете ;)
+//[mr-X] Но, не беда - в реке плавает лодка.
+//[mr-X] Возьмите лодку и бегом на другой берег.
+
+var startLevel = function(){
+
+	var getRandomInt = function (min, max){
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	};
+	
+	map.defineObject({
+		name:'vessel',
+		symbol:String.fromCharCode(0x23C5),
+		color: '#603606', 
+		type:'dynamic',
+		transport:true,
+		behavior:function(me){
+			<editable>
+		},
+		onTake:function(){
+			return true;
+		}
+	});
+
+	map.defineObject({
+		name:'grass',
+		symbol:String.fromCharCode(0x0027),
+		color: '#0f0', type:'ground'
+	});
+	
+	map.defineObject({
+		name:'water',
+		placeOnMe:false,
+		symbol:'~',
+		color: '#0ff',
+		type:'ground',
+		onCollision:function(object){
+			if(object.name === 'vessel')
+				return;
+		
+			if(object.type !== 'dynamic' && object.name != 'player'){
+				object.kill();
+				return;
+			}
+			
+			if(!object.hasItem('vessel'))
+				object.kill('утонул в воде');
+		}
+	});
+
+	map.defineObject({name:'tree',symbol:'&',color: '#0f0',type:'moved'});
+
+	var generateForest = function(){
+		for(var i = 0; i < 25; i++){
+			for(var j = 0; j < 20; j++){
+				if(map.whoIs(i,j)==='grass')
+					if(Math.random() > 0.4)
+						map.placeObject('tree',i,j) 
+			}
+		}
+
+		arr = map.getObjectsCoords('grass');
+		for(var i = 0; i < 2; i++){
+			var a = getRandomInt(0,arr.length-1);
+			map.placeObject('bonus', arr[a].x, arr[a].y);
+			arr.splice(a,1);
+		}
+	};
+	
+	var placeRandom = function(name,count,arr){
+		for(var i = 0; i < count; i++){
+			var z = getRandomInt(0,a.length - 1);
+			map.placeObject(name, arr[z].x, arr[z].y);
+			arr.splice(z,1);
+		}
+	};
+	
+	var a = [];
+	
+	for(var i = 0; i < 25; i++)
+		for(var j = 8; j < 13; j++) 
+			a.push({x:i,y:j});
+
+	placeRandom('mine',5,a);
+	placeRandom('vessel',1,a);
+	
+	for(var i = 0; i < 25; i++){
+		for(var j = 0; j < 20; j++){
+			if(map.whoIs(i,j) === 'null')
+			   map.placeObject('grass', i, j);
+		}
+	}
+	
+	for(var i = 0; i < 25; i++){
+		for(var j = 8; j < 13; j++){
+			if(map.whoIs(i,j) === 'grass')
+			map.placeObject('water', i, j);
+		}
+	}
+	
+	map.placePlayer(12,15);
+	map.placeObject('exit',1,1);
+	generateForest();
+	var player = map.getPlayer();
+	player.setColor('#0ff');
+	<editable>
+	<editable>
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus',  2);
+	map.checkLevelOnCountObject('exit',   1);
+	map.checkLevelOnCountObject('vessel', 1);
+}
+var onExit = function(map) {};

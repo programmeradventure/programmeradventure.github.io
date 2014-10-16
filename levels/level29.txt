@@ -1,0 +1,159 @@
+var startLevel = function(){
+	var getRandomInt = function (min, max){
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
+	var handler = function(player, me){
+		if(player.getColor() !== me.color)
+			player.kill();
+	}
+
+	map.defineObject({name: 'wood',color:'#ff0',symbol:'|',type:'ground'});
+
+	map.defineObject({name:'red',symbol:'.',color: '#f00',type:'ground', 
+		placeItem:false, placeGround:false, onPlayerCollision:handler
+	});
+
+	map.defineObject({name:'green',symbol:'.',color: '#0f0',type:'ground',
+		placeItem:false, placeGround:false, onPlayerCollision:handler
+	});
+
+	map.defineObject({name:'blue',symbol:'.',color: '#00f',type:'ground',
+		placeItem:false, placeGround:false, onPlayerCollision:handler
+	});
+				 
+	map.defineObject({name:'fire',color:'#fa0',symbol:'*',type:'projectile',
+		behavior:function(me){me.move('right');}
+	});
+	
+	map.defineObject({name:'ice',color:'#ccf',symbol:'*',type:'projectile',
+		behavior:function(me){me.move('left'); }
+	});
+
+	map.defineObject({
+		name:'secretary',
+		symbol:'s',
+		type:'dynamic',
+		color:'#f00',
+		undead:true,
+		onPlayerCollision:function(player,me){
+			if(player.hasItem('pass')){
+				me.move('right');
+				map.showMessage(
+				'[секретарь] Проходите... хозяин ждет Вас.','#fff');
+			}
+			else
+				map.showMessage('[секретарь] Пропуск пожалуйста.','#fff');
+		}
+	});
+
+	map.defineObject({name:'corpse',symbol:'@',type:'dynamic',color:'#ccc',
+		undead:true,
+		onPlayerCollision:function(player,me){
+			if(player.hasItem('pass')){
+				map.showMessage('труп...','#fff');
+				return;
+			}
+			if(me.passDefined === undefined)
+				me.passDefined = false;
+
+			if(!me.passDefined){
+				me.passDefined = true;
+				map.defineObject({name: 'pass',color:'#ff0',
+								  symbol:'P',type:'item'});         
+				me.giveItem('pass', player);
+				me.giveItem('bonus', player);
+				me.giveItem('bonus', player);
+				me.giveItem('bonus', player);
+				map.showMessage('Вы взяли у трупа пропуск!','#fff');
+			}
+			else
+				map.showMessage('труп...','#fff');
+	}});
+	
+	map.defineObject({name:'ncorpse',symbol:'@',type:'dynamic',color:'#ccc',
+		undead:true,
+		onPlayerCollision:function(player,me){
+			map.showMessage('труп...','#fff');
+	}});
+	
+	var arr = [
+		 '#####################'
+		,'#................#.k#'
+		,'#@...............|s*#'
+		,'#................#..#'
+		,'#................####'
+		,'#.................#.#'
+		,'#.................#.#'
+		,'#.................#.#'
+		,'#.................#.#'
+		,'#.................#.#'
+		,'#.................#+#'
+		,'#.................#.#'
+		,'#.................#.#'
+		,'#.................#.#'
+		,'#.................#.#'
+		,'#.................#e#'
+		,'#####################'
+	];
+
+	var legend = {   '#':'block'
+					,'@':'player'
+					,'.':'ground'
+					,'|':'wood'
+					,'+':'door'
+					,'k':'key'
+					,'s':'secretary'
+					,'b':'bonus'
+					,'f':'fire'
+					,'i':'ice'
+					,'*':function(){map.placeButton(19,2,19,4)}
+					,'e':'exit'}
+	map.createFromGrid(arr,legend);
+	map.setTimer(function(){
+		for(var i = 6; i < 16 ; i++){
+			map.placeObject('fire',1,i);
+			map.placeObject('ice',17,i);
+		}
+	},1000);
+
+	var gnd = map.getObjectsCoords('ground');
+	var filter = [];
+	for(var i = 0; i < gnd.length; i++){
+		if(gnd[i].x < 18 && gnd[i].y > 5){
+			filter.push(gnd[i]);
+		}
+	}
+
+	for(var i = 0; i < 5; i++){
+		var n = getRandomInt(0, filter.length - 1);
+		map.placeObject('ncorpse',   filter[n].x, filter[n].y);
+		filter.splice(n,1);
+	}
+
+	var n = getRandomInt(0, filter.length - 1);
+	map.placeObject('corpse', filter[n].x, filter[n].y);
+	filter.splice(n,1);
+
+	for(var i = 0; i < filter.length; i++){
+		var n = getRandomInt(1,100);
+		if(n<=33)
+			map.placeObject('red',   filter[i].x, filter[i].y);
+		else if(n>33 && n<=66)
+			map.placeObject('green', filter[i].x, filter[i].y);
+		else if(n>66)
+			map.placeObject('blue',  filter[i].x, filter[i].y);
+	}
+	<editable>
+	<editable>
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus',    0);
+	map.checkLevelOnCountObject('pass',     0);
+	map.checkLevelOnCountObject('exit',     1);
+	map.checkLevelOnCountObject('key',      1);
+	map.checkLevelOnCountObject('teleport', 0);
+	map.checkLevelOnCountObjectType('button', 1);
+}
+var onExit = function(map) {};

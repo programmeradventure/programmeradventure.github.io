@@ -1,0 +1,382 @@
+body {
+background-color:#000;
+margin:0;
+padding:0;
+}
+
+a{
+	color: #afa;
+	font-family:Consolas;
+	font-size:10pt;
+}
+
+#levelFooter{
+	color: #0f0;
+	font-family:Consolas;
+	font-size:10pt;
+}
+
+#prevLevelsolutionURL{
+	color: #fff;
+	position: absolute;
+	font-family:Consolas;
+	font-size:10pt;
+}
+
+#container{
+	position: absolute;
+	width: 100%; 
+	height: 100%; 
+}
+
+#levelTitle,#turnsCounter,#turnsOnLevel{
+	position: absolute;
+	color: #0f0;
+	background-color: #000;
+	font-family:'Consolas';
+    font-size:12pt;
+}
+
+#turnsCounter,#turnsOnLevel{
+	margin-left: 200px;
+	color: #0ff;
+	float:left;
+}
+
+#turnsOnLevel{
+	margin-left: 100px;
+	color: #ff0;
+	float:left;
+}
+
+#soundName
+{
+  margin-left: 5px;
+  font-family:Consolas;
+  font-size:10pt;
+  color: #ccc;
+  float:right;
+}
+
+#password
+{
+	color: #000;
+	background-color: #ccc;
+	font-family:'Consolas';
+    font-size:14pt;
+    width: 90px;
+    font-weight: bold;
+    border:1px solid black;
+}
+
+#btnSetLevel,#btnClearSaves{
+	font-family:'Consolas';
+    font-size:14pt;
+    width: 50px;
+    font-weight: bold;
+    color: #1F4601;
+    border:1px solid black;
+}
+
+#btnClock{
+	display: none;
+}
+
+#levelPassword{
+	color: #000;
+	background-color: #fff;
+}
+
+#btnClearSaves{
+	color: #f00;
+	width: 180px;
+	margin-left: 200px;
+}
+
+#lvlCanvas {
+width:100%;
+height:100%;
+}
+
+#panes {
+display:table;
+position:relative;
+margin:5px auto 0;
+}
+
+#screenPane,#audioPane,#codePane,#buttonPane {
+color:transparent;
+float:left;
+clear:left;
+}
+
+#editorPane {
+display:none;
+opacity:0.1;
+float:left;
+position:relative;
+left:1px;
+}
+
+#codePane {
+border:5px solid #ccc;
+}
+
+.readOnly {
+background:#031337;
+}
+
+:focus {
+outline:none;
+}
+
+.gamebutton,.vipButton {
+background:teal;
+width:85px;
+font-family:'14pt Garamond';
+font-weight:700;
+margin-top:2px;
+}
+
+.vipButton {
+  background:#7f7;
+}
+
+input[type="button"]:hover{
+	background-color:#1b5a9e;
+}
+
+#btnCloseAPI {
+position:absolute;
+margin-left:586px;
+margin-top:-1px;
+border:2px solid #000;
+width:30px;
+height:30px;
+}
+
+#btnSaveNote {
+position:absolute;
+margin-top:575px;
+border:2px solid #000;
+}
+
+#btnCloseMenu {
+position:absolute;
+margin-left:220px;
+margin-top:-1px;
+border:2px solid #000;
+}
+
+#btnCloseNote {
+position:absolute;
+width:60px;
+margin-top:5px;
+margin-left:435px;
+border:2px solid #000;
+}
+
+#btnCloseNote:hover,#btnSaveNote:hover,#btnCloseAPI:hover {
+background-color:#f0f;
+}
+
+#notepad,#api_book {
+display:none;
+position:absolute;
+width:500px;
+height:600px;
+background-color:#ccc;
+border:5px solid blue;
+z-index:999;
+}
+
+#api_book {
+width:700px;
+background-color:teal;
+}
+
+#menu {
+display: none;
+position:absolute;	
+background-color:#1b5a9e;
+z-index:999;
+}
+
+#menu_title{
+	background-color:teal;
+	border:1px solid #000;
+	font-family:Consolas;
+	font-size:14pt;
+	font-weight:700;
+	text-align: center;
+}
+
+.menu_item,.menu_item_green,.menu_item_pink,.menu_item_green_mrg,.menu_item_pink_mrg{
+	position:relative;	
+	width:80px;
+	height:25px;
+	background-color:#ccc;
+	z-index:999;
+	margin-top: 5px;
+	float:left;
+	text-align: center;
+	line-height: 30px;
+	font-family:Consolas;
+	font-size:12pt;
+	font-weight:700;
+	text-align: center;
+}
+
+.menu_item_container{
+	position:relative;	
+	width:80px;
+	background-color:#1b5a9e;
+	float:left;
+	margin-left: 5px;
+	margin-top: 5px;
+	border:1px solid black;
+}
+
+.menu_item_stars_container{
+	position:relative;	
+	width:80px;
+	height: 22px;
+	float:left;
+	margin-left: 1px;
+	line-height: 30px;
+	font-family:Consolas;
+	font-size:12pt;
+	font-weight:700;
+	text-align: center;
+}
+
+.menu_item_green{
+	background-color:#afa;
+}
+
+.menu_item_pink{
+	background-color:#faa;
+}
+
+.menu_item_green:hover{
+	background:#0f0;
+}
+
+.menu_item_pink:hover{
+	background:#0f0;
+}
+
+.totalBonus{
+	font-family:Consolas;
+	font-size:12pt;
+	font-weight:700;
+	text-align: center;
+	float:left;
+	text-shadow: 1px 1px 0 #cfc, -1px -1px 0 #cfc, 1px -1px 0 #cfc,
+            -1px 1px 0 #cfc, 3px 3px 5px #333;
+    margin-top:  10px;  
+    margin-left: 10px;    
+}
+
+.greenStar{
+	/*color:#0f0;*/
+	text-shadow: 1px 1px 0 #cfc, -1px -1px 0 #cfc, 1px -1px 0 #cfc,
+            -1px 1px 0 #cfc, 3px 3px 5px #333;
+}
+.redStar{
+	/*color:#0f0;*/
+	text-shadow: 1px 1px 0 #fcc, -1px -1px 0 #fcc, 1px -1px 0 #fcc,
+            -1px 1px 0 #fcc, 3px 3px 5px #333;
+}
+
+#notepad_title,#api_book_title {
+position:absolute;
+width:497px;
+height:30px;
+background-color:teal;
+border:2px solid #000;
+font-family:Consolas;
+font-size:14pt;
+font-weight:700;
+}
+
+#notepad_body,#api_book_body {
+position:absolute;
+width:497px;
+height:540px;
+margin-top:30px;
+background-color:#f0f;
+border:2px solid #000;
+}
+
+.api_book_note {
+background-color:#000;
+color:#fff;
+float:left;
+width:497px;
+height:100%;
+font-family:Consolas;
+font-size:12pt;
+overflow-y: scroll;
+}
+
+.api_book_title {
+width:200px;
+height:100%;
+background-color:#1b5a9e;
+float:left;
+}
+
+.api_function_name {
+color:#ff0;
+}
+
+#api_title div:hover {
+background-color:#afa;
+}
+
+#api_title div:active {
+background-color:#1b5a9e;
+}
+
+.api_book_item {
+background-color:#aaf;
+border:1px solid #000;
+font-family:Consolas;
+font-size:14pt;
+font-weight:700;
+padding:3px;
+}
+
+.api_book_title,.api_book_item,.menu_item,.menu_title,.menu_item_green,.menu_item_pink{	
+-webkit-user-select: none;
+-moz-user-select:    none;
+-o-user-select:      none;
+-ms-user-select:     none;
+-khtml-user-select:  none;     
+ user-select:        none;
+}
+
+.api_book_item_selected {
+background-color:#1b5a9e;
+border:1px solid #000;
+font-family:Consolas;
+font-size:14pt;
+font-weight:700;
+padding:3px;
+}
+
+#levelPane{
+display:none;
+}
+#btnLoad{
+display:none;
+}
+
+.audioPlayer{
+display:none;
+}
+
+#api_book_title,#api_book_body {
+width:697px;
+}

@@ -1,0 +1,91 @@
+//[master] Скоро встретимся !!!.
+
+var startLevel = function(){
+
+	var getRandomInt = function (min, max){
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	};
+	
+	//scroll
+	map.defineObject({
+		name:'note',
+		symbol:'!',
+		color: '#0ff', 
+		type:'ground',
+		onPlayerCollision:function(player, me){
+			map.showMessage('10010100 map.placeTeleport 100101', '#ff0', 5000);
+		}
+	});
+	
+	map.defineObject({
+		name:'lava',
+		symbol:'~',
+		color: '#BD4900',
+		type:'ground',
+		placeItem:   false,
+		placeGround: false,
+		placeMoved:  false,
+		onCollision:function(object){
+			object.kill(' Утонул в лаве.');
+		}
+	});
+	
+	map.defineObject({
+		name:'ice',
+		symbol:'#',
+		color: '#0049BD',
+		type:'ground',
+		placeItem:   false,
+		placeGround: false,
+		placeMoved:  false
+	});
+
+	var arr = [
+		 '#########################'
+		,'#########################'
+		,'#####....~~~~~~----*#####'
+		,'#####....~~~~~~-----#####'
+		,'#####....~~~~~~-#########'
+		,'#####....~~~~~~-##+e#####'
+		,'#####..o.~~~~~~-#########'
+		,'#####....~~~~~~-----#####'
+		,'#####....~~~~~~-----#####'
+		,'#####.@..~~~~~~--a--#####'
+		,'#####....~~~~~~-----#####'
+		,'#####!...~~~~~~-----#####'
+		,'#####....~~~~~~--b--#####'
+		,'#####....~~~~~~-----#####'
+		,'#####....~~~~~~~~~~~#####'
+		,'#####....~~~~~~.....#####'
+		,'#####....~~~~~~.*..k#####'
+		,'#########################'
+		,'#########################'
+	];
+
+	var legend = { '#':'block'
+				  ,'.':'ground'
+				  ,'*':'trojan'
+				  ,'e':'exit'
+				  ,'~':'lava'
+				  ,'k':'key'
+				  ,'@':'player'
+				  ,'+':'door'
+				  ,'a':function(){map.placeButton(17,9,17,5)}
+				  ,'b':function(){map.placeButton(17,12,16,5)}
+				  ,'*':'bonus'
+				  ,'-':'ice'
+				  ,'!':'note'
+				  ,'o':function(){map.placeTeleport(7,6,15,3)}
+				 };
+				 
+	map.createFromGrid(arr,legend);
+	<editable>
+	<editable>
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus', 2);
+	map.checkLevelOnCountObject('exit',  1);
+	map.checkLevelOnCountObjectType('dynamic', 1);
+}
+var onExit = function(map) {};

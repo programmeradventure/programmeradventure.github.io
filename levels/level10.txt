@@ -1,0 +1,159 @@
+//[mr-X] Это первое настоящее испытание.
+//[mr-X] Далеко не все смогли преодолеть его.
+//[mr-X] Используй знания и опыт, полученный на предыдущих заданиях.
+//[mr-X] Убей начальника охраны и его помощников.
+//[mr-X] P.S. Обрати внимание на robo-Z и robo-V.
+
+var startLevel = function(){
+
+	var moveToward = function(obj,trg) {
+		var target   = obj.findNearestToPoint(trg);
+		var leftDist = obj.getX() - target.x;
+		var upDist   = obj.getY() - target.y;
+		var direction;
+		
+		if (upDist == 0 && leftDist == 0) return;
+		
+		if (upDist > 0 && upDist >= leftDist)
+			direction = 'up';
+		else if (upDist < 0 && upDist < leftDist)
+			direction = 'down';
+		else if (leftDist > 0 && leftDist >= upDist)
+			direction = 'left';
+		else
+			direction = 'right';
+
+		obj.move(direction);
+	};
+	//bullet
+	map.defineObject({
+		name:'bullet',
+		symbol:'*',
+		color: '#f0f', 
+		type:'projectile',
+		behavior:function(me){
+		   me.move('left');
+		} 
+	});
+	//boss  
+	map.defineObject({
+		name:'boss',
+		symbol:'B',
+		color: '#ff0', 
+		type:'dynamic',
+		onPlayerCollision:function(player, me){
+			player.kill(me);
+		},
+		behavior:function(me){
+			moveToward(me,'player');
+			if(map.whoIs(me.getX() - 1, me.getY()) === 'ground')
+				map.placeObject('bullet',me.getX() - 1, me.getY());
+		},
+		onDead:function(me){
+			map.placeObject('exit',me.getX(), me.getY());
+			var grd = map.getObjectsCoords('ground');
+			for(var i = 0; i < 4; i++)
+				map.placeObject('bonus',grd[i].x,grd[i].y);
+		}
+	});
+	//robo-T
+	map.defineObject({
+		name:'robo-T',
+		symbol:'G',
+		color: '#f00', 
+		type:'dynamic',
+		onPlayerCollision:function(player, me){
+			player.kill(me);
+		},
+		behavior:function(me){
+			moveToward(me,'player');
+		},
+		onDead:function(me){
+			map.placeObject('block', me.getX(), me.getY());
+		}
+	});
+	//robo-V
+	map.defineObject({
+		name:'robo-V',
+		symbol:'G',
+		color: '#f0f', 
+		type:'dynamic',
+		onPlayerCollision:function(player, me){
+			player.kill(me);
+		},
+		behavior:function(me){
+			moveToward(me,'player');
+		},
+		onDead:function(me){
+			map.placeObject('movedBlock', 12, 1);
+		}
+	});
+	//robo-Z
+	map.defineObject({
+		name:'robo-Z',
+		symbol:'G',
+		color: '#ff0', 
+		type:'dynamic',
+		onPlayerCollision:function(player, me){
+			player.kill(me);
+		},
+		behavior:function(me){
+			moveToward(me,'player');
+		},
+		onDead:function(me){
+			map.placeObject('movedBlock', 12, 13);
+		}
+	});
+	
+	var arr = [
+		 '###############'
+		,'#@...........q#'
+		,'#.............#'
+		,'#.............#'
+		,'#.....GGG.....#'
+		,'#....#####....#'
+		,'#...G#####G...#'
+		,'#...G##B##Z...#'
+		,'#...G#####G...#'
+		,'#....#####....#'
+		,'#.....GVG.....#'
+		,'#.............#'
+		,'#.............#'
+		,'#............w#'
+		,'###############'
+	];
+	
+	var legend = {
+		 '#':'block'
+		,'@':'player'
+		,'.':'ground'
+		,'G':'robo-T'
+		,'V':'robo-V'
+		,'Z':'robo-Z'
+		,'B':'boss'
+		,'q':function(){map.placeButton(13,1,5,7)}
+		,'w':function(){map.placeButton(13,13,6,7)}
+	};
+	map.createFromGrid(arr,legend);	 
+	<editable>
+	<editable>
+	<editable>
+};
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('empty', 1);
+	map.checkLevelOnCountObject('mine',  3);
+	map.checkLevelOnCountObject('bonus', 4);
+	map.checkLevelOnCountObject('exit',  1);
+	map.checkLevelOnCountObjectType('moved',  2);
+	map.checkLevelOnCountObjectType('button', 2);
+	map.checkLevelOnCountObjectType('dynamic',16);
+};
+var onExit = function(map) {
+	if(map.getObjectCount('boss') === 0)
+		return true;
+	else
+		map.showMessage('boss не убит.','#fff');
+
+	return false;
+};

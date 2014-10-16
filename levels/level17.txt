@@ -1,0 +1,104 @@
+//[mr-X] О нет! Охранники ищут тебя!
+//[mr-X] Не попадайся им на глаза.
+//[mr-X] P.S. я верю в тебя.
+
+var startLevel = function(){
+
+	var getRandomInt = function (min, max){
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	};
+		
+	var moveToward = function(obj,trg) {
+		var target   = obj.findNearestToPoint(trg);
+		var leftDist = obj.getX() - target.x;
+		var upDist   = obj.getY() - target.y;
+		var direction;
+		
+		if (upDist == 0 && leftDist == 0) return;
+		
+		if (upDist > 0 && upDist >= leftDist)
+			direction = 'up';
+		else if (upDist < 0 && upDist < leftDist)
+			direction = 'down';
+		else if (leftDist > 0 && leftDist >= upDist)
+			direction = 'left';
+		else 
+			direction = 'right';
+
+		obj.move(direction);
+	}
+	
+	map.defineObject({
+		name:'note',
+		symbol:'!',
+		color:'#f0f',
+		type:'ground',
+		onPlayerCollision: function(player, me){
+			map.showMessage('[Эхо] Он где-то рядом!','#0f0');
+		}
+	});
+
+	map.defineObject({
+		name:'grass',
+		symbol:String.fromCharCode(0x0027),
+		color: '#0f0', type:'ground'
+	});
+	
+	map.defineObject({name:'tree',symbol:'&',color: '#0f0',type:'moved'});
+	
+	map.defineObject({
+		name:'guard',
+		symbol:'G',
+		color: '#f00',
+		type:'dynamic',
+		behavior:function(me){
+			moveToward(me,'player');
+		},
+		onPlayerCollision:function(player, me){
+			player.kill(me);
+		},
+	});
+	
+	var generateForest = function(){
+		for(var i = 0; i < 25; i++){
+			for(var j = 0; j < 20; j++){
+				if(map.whoIs(i,j)==='null')
+				{
+					if(Math.random() > 0.5)
+						map.placeObject('tree',i,j) 
+					else
+						map.placeObject('grass',i,j)
+				}
+			}
+		}
+
+		arr = map.getObjectsCoords('grass');
+		for(var i = 0; i < 2; i++){
+			var a = getRandomInt(0,arr.length-1);
+			map.placeObject('bonus', arr[a].x, arr[a].y);
+			arr.splice(a,1);
+		}
+		
+		for(var i = 0; i < 5; i++){
+			var a = getRandomInt(0,arr.length-1);
+			map.placeObject('guard', arr[a].x, arr[a].y);
+			arr.splice(a,1);
+		}
+	}
+
+	map.placePlayer(12,10);
+	map.placeObject('note',11,10);
+	map.placeObject('exit',1,1);
+	generateForest();
+	var player = map.getPlayer();
+	player.setColor('#0ff');
+	//use mapScanner API that search guards
+	<editable>
+	<editable>
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus', 2);
+	map.checkLevelOnCountObject('exit', 1);
+}
+var onExit = function(map) {};

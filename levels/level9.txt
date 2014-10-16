@@ -1,0 +1,56 @@
+//[mr-X] z-z-z ;)
+
+var startLevel = function(){
+	//room
+	for(var i = 0; i < 15 ; i++){
+		for(var j = 0; j < 15; j++){
+			if(i === 0 || j === 0 || i === 14 || j === 14)
+				map.placeObject('block', i, j);
+			else
+				map.placeObject('ground', i, j);
+		} 
+	};
+	//fireball
+	map.defineObject(
+	{
+		name:'fireball',
+		color:'#fa0',
+		symbol:'*',
+		type:'projectile',
+		behavior:function(me){
+			me.move('down'); 
+		}
+	});
+	//iceball
+	map.defineObject(
+	{
+		name:'iceball',
+		color:'#aaf',
+		symbol:'*',
+		type:'projectile',
+		behavior:function(me){
+			me.move('up'); 
+		}
+	});
+	map.placeObject('bonus', 1, 1);
+	map.placeObject('bonus', 13, 1);
+	map.placeObject('bonus', 1, 13);
+	map.placeObject('bonus', 7, 13);
+	map.placeObject('exit', 13, 13);
+	map.placePlayer(7, 7);
+
+	for(var i = 1; i < 14 ; i++){
+		map.placeObject('fireball', i, 2);
+		map.placeObject('iceball', i, 12);
+	}
+	<editable>
+	<editable>
+	<editable>
+}
+
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus', 4);
+	map.checkLevelOnCountObject('exit', 1);
+}
+var onExit = function(map) {};

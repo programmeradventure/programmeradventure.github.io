@@ -1,0 +1,74 @@
+//[mr-X] Вижу схватываешь на лету!
+//[mr-X] Посмотрим, как ты выполнишь задачу без моей помощи ;).
+//[mr-X] P.S. Читай таблички [!] они иногда здорово помогают.
+
+var startLevel = function(){
+	var color = '#000';
+	
+	var getRandomInt = function (min, max){
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+	<editable>
+	<editable>
+
+	//floor
+	map.defineObject({
+		name:'floor',
+		symbol:'.',
+		color: color,
+		type:'ground'
+	});
+
+	//note
+	map.defineObject({
+		name:'note',
+		symbol:'!',
+		color:'#f0f',
+		type:'ground',
+		onPlayerCollision: function(player, me){
+			map.showMessage(
+			'[надпись] Только верующий сможет пройти дальше.','#0f0');
+		}
+	});
+	
+	//room
+	for(var i = 0; i < 15 ; i++){
+		for(var j = 0; j < 15; j++){
+			if(i === 0 || j === 0 || i === 14 || j === 14){
+				map.placeObject('block', i, j);
+			}
+			else{
+				map.placeObject('ground', i, j);
+			}
+		} 
+	}; 
+	
+	var drawDeadArea = function(){
+		for(var i = 3; i < 12 ; i++){
+			for(var j = 1; j < 14; j++){
+				map.placeObject('empty', i, j);
+			} 
+		};
+	}(); 
+	
+	var trust = function(){
+		var n = getRandomInt(1, 12);
+		for(var i = 3; i < 12 ; i++){
+			map.placeObject('floor', i, n);
+		};
+	}();
+	
+	map.placeObject('note',2, 7); 
+	map.placeObject('bonus',13, 8);  
+	map.placePlayer(1, 7);
+	map.placeObject('exit', 13, 7);
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus', 1);
+	map.checkLevelOnCountObject('exit', 1);
+	map.checkLevelOnCountObjectType('ground',60);
+}
+var onExit = function(map) {
+	map.checkLevelOnInventory('computer');
+};

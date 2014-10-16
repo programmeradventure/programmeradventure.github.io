@@ -1,0 +1,47 @@
+//[mr-X] Привет счастливчик! 
+//[mr-X] Если ты попал в это место - ты как раз тот, кто мне нужен.
+//[mr-X] Я давно ищу программера, способного вытащить меня отсюда.
+//[mr-X] Я помогу тебе, если ты поможешь мне.
+//[mr-X] Всегда есть выбор - идти дальше или умереть. Выбирай.
+
+var startLevel = function(){
+	var room_size = 6;
+	//room
+	for(var i = 0; i < room_size * 3 ; i++){
+		for(var j = 0; j < room_size; j++){
+			if(i === 0 || 
+				j === 0 || i === room_size * 3-1 || j === room_size - 1){
+				map.placeObject('block', i, j);
+			}
+			else{
+				map.placeObject('ground', i, j);
+			}
+		}
+	};
+	map.placeObject('mine', 1, 4);
+	//walls
+	map.placeObject('block', room_size, 1);
+	map.placeObject('movedBlock', room_size, 2);
+	map.placeObject('block', room_size, 3);
+	map.placeObject('block', room_size, 4);
+	map.placeObject('block', room_size*2, 1);
+	map.placeObject('block', room_size*2, 2);
+	map.placeObject('block', room_size*2, 3);
+	map.placeObject('block', room_size*2, 4);
+	//objects
+	map.placeButton(11,4,room_size*2,2);
+	map.placeObject('exit', 16, 10);
+	map.placeObject('computer', 16, 1);
+	map.placeObject('bonus', 16, 4);
+	map.placePlayer(2,2);
+	<editable>
+	<editable>
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('computer', 1);
+	map.checkLevelOnCountObject('bonus', 1);
+}
+var onExit = function(map) {
+	map.checkLevelOnInventory('computer');
+};

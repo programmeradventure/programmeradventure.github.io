@@ -1,0 +1,171 @@
+//[mr-X] Вот мы и встретились.
+//[mr-X] Если бы ты пришел немного раньше, мы смогли бы сбежать отсюда.
+//[mr-X] Но теперь поздно, хозяин промыл мне мозги и я должен тебя остановить.
+//[master] Хватит разговоров, убей его!
+//[mr-X] Извини, но ничего личного. Умри!!!
+
+var startLevel = function(){
+
+	var getRandomInt = function (min, max){
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	};
+	
+	var moveToward = function(obj,trg) {
+		var target   = obj.findNearestToPoint(trg);
+		var leftDist = obj.getX() - target.x;
+		var upDist   = obj.getY() - target.y;
+		var direction;
+		
+		if (upDist == 0 && leftDist == 0) return;
+		
+		if (upDist > 0 && upDist >= leftDist)
+			direction = 'up';
+		else if (upDist < 0 && upDist < leftDist)
+			direction = 'down';
+		else if (leftDist > 0 && leftDist >= upDist)
+			direction = 'left';
+		else 
+			direction = 'right';
+
+		obj.move(direction);
+	};
+
+	map.defineObject({
+		name:'neutral',  symbol:'.',
+		color: '#0f0', type:'ground',
+		placeItem:   false,
+		placeGround: false,
+		placeMoved:  false,
+	});
+	
+	map.defineObject({
+		name:'floor',  symbol:'.',
+		color: '#0ff', type:'ground',
+	});
+	
+	map.defineObject({
+		name:'floor2',  symbol:'.',
+		color: '#f0f', type:'ground',
+	});
+	
+	map.defineObject({
+		name:'bullet',  symbol:'*',
+		color: '#f0f', type:'projectile',
+		behavior:function(me){
+			moveToward(me,'player');
+		}
+	});
+	
+	map.defineObject({
+		'name':'mr-X',
+		'symbol':'@',
+		'color':'#ff0',
+		'type':'dynamic',
+		 undead: true,
+		 behavior:function(me){
+			var player = map.getPlayer();
+			if(player.hasItem('trojan') || player.hasItem('virus'))
+			{
+				if(me.lock === undefined)
+					me.lock = true;
+
+				var x = me.getX();
+				var y = me.getY();
+				if(map.whoIs(x + 1, y) === 'floor' || 
+					map.whoIs(x + 1, y) === 'ground')
+					{map.placeObject('door', x + 1, y)};
+
+				if(map.whoIs(x - 1, y) === 'floor' || 
+					map.whoIs(x + 1, y) === 'ground')
+					{map.placeObject('door', x - 1, y)};
+
+				if(map.whoIs(x, y + 1) === 'floor' ||
+					map.whoIs(x + 1, y) === 'ground')
+					{map.placeObject('door', x, y + 1)};
+
+				if(map.whoIs(x, y - 1) === 'floor' || 
+					map.whoIs(x + 1, y) === 'ground')
+					{map.placeObject('door', x, y - 1)};
+			}
+			if(me.lock !== true)
+				moveToward(me,'player');
+
+			var grd = map.getObjectsCoords('floor');
+				var a = getRandomInt(0,grd.length - 1);
+			grd.splice(a,1);
+				var b = getRandomInt(0,grd.length - 1);
+
+			if(grd[a] !== undefined)
+				map.placeObject('bullet', grd[a].x, grd[a].y);  
+
+			if(grd[b] !== undefined) 
+				map.placeObject('bullet', grd[b].x, grd[b].y);
+		},
+		onPlayerCollision:function(player,me){
+			player.kill(me);
+		},
+		onDead:function(me){
+			var grd = map.getObjectsCoords('floor');
+
+			for(var i = 0; i < 5 ; i++)
+				map.placeObject('bonus', grd[i].x, grd[i].y);
+
+			map.placeObject('exit',me.getX(),me.getY());
+		}
+	});
+	
+	var arr = [
+		 '           ###########        '
+		,'           #=========#        '
+		,'           #====T====#        '
+		,'           #=========#        '
+		,'           #=========#        '
+		,'##############################' 
+		,'#............................#'  
+		,'#............................#'  
+		,'#............................#'  
+		,'#...@....................X...#'  
+		,'#............................#'   
+		,'#............................#' 
+		,'#............................#' 
+		,'#............................#' 
+		,'#............................#' 
+		,'##############################'
+		,'           #---------#        '
+		,'           #---------#        '
+		,'           #----V----#        '
+		,'           #---------#        '
+		,'           ###########        '
+	];
+
+	var legend = { '#':'block'
+				  ,'.':'floor'
+				  ,'@':'player'
+				  ,'V':'virus'
+				  ,'T':'trojan'
+				  ,'X':'mr-X'
+				  ,'-':'neutral'
+				  ,'=':'floor2'
+				  ,'m':'movedBlock'
+				 };
+				 
+	map.createFromGrid(arr,legend);
+	<editable>
+	<editable>
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus',         5);
+	map.checkLevelOnCountObject('exit',          1);
+	map.checkLevelOnCountObjectType('dynamic',   2);
+	map.checkLevelOnCountObjectType('moved',     6);
+	map.checkLevelOnCountObjectType('static',    116);
+}
+var onExit = function(map) {
+	if(map.getObjectCount('mr-X') === 0)
+		return true;
+	else
+		map.showMessage('mr-X не убит.','#fff');
+
+	return false;
+};

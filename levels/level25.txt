@@ -1,0 +1,122 @@
+//[master] cool-][ убит! Нее-е-е-е-т!!!! 
+//[master] Ну ничего, в этой темной комнате мои монстры быстро тебя найдут!
+//[mr-X] Псс-с-с. Это снова я.
+//[mr-X] В прошлый раз ,когда я кормил монстров, я забыл там фонарик.
+//[mr-X] Он поможет тебе. Загляни в API.
+//[master] Ах ты мерзавец, иди сюда!!
+//[mr-X] Все, не могу говорить. Дальше сам.
+
+var startLevel = function(){
+
+	var getRandomInt = function (min, max){
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	};
+	
+	var moveToward = function(obj,trg) {
+		var target   = obj.findNearestToPoint(trg);
+		var leftDist = obj.getX() - target.x;
+		var upDist   = obj.getY() - target.y;
+		var direction;
+		
+		if (upDist == 0 && leftDist == 0) return;
+		
+		if (upDist > 0 && upDist >= leftDist)
+			direction = 'up';
+		else if (upDist < 0 && upDist < leftDist)
+			direction = 'down';
+		else if (leftDist > 0 && leftDist >= upDist)
+			direction = 'left';
+		else
+			direction = 'right';
+
+		obj.move(direction);
+	};
+	
+	var generate = function(){
+		var tiles = map.getObjectsCoords('black');
+		var filter = [];
+		
+		for(var i = 0; i < tiles.length; i++)
+		{
+			if(tiles[i].x > 12)
+				filter.push(tiles[i]);
+		}
+		
+		for(var i = 0; i < 10; i++)
+		{
+			var coords = getRandomInt(0,filter.length - 1);
+			
+			if(i % 2 === 0)
+			  map.placeObject('empty',filter[coords].x,filter[coords].y);
+			else
+			  map.placeObject('shadow',filter[coords].x,filter[coords].y);
+			  
+			filter.splice(coords,1);
+		}
+		tiles  = null;
+		filter = null;
+	};
+
+	map.defineObject({
+		'name':'black',
+		'symbol':'.',
+		'color':'#000',
+		'type':'ground'
+	});
+
+	map.defineObject({
+		'name':'shadow',
+		'symbol':'@',
+		'color':'#000',
+		'type':'dynamic',
+		 undead: true,
+		 behavior:function(me){
+			moveToward(me,'player');
+		 }, 
+		 onPlayerCollision:function(player,me){
+			player.kill(me);
+		 },
+		 onDead:function(me){
+			map.placeObject('bonus',me.getX(),me.getY());
+		 }
+	});
+
+	var arr = [
+		 '#########################'
+		,'#########################'
+		,'#####..............e#####'
+		,'#####...............#####'
+		,'#.*.................#####'
+		,'#.###...............#####'
+		,'#.###...............#####'
+		,'#.F.................#####'
+		,'#####...............#####'
+		,'#####...............#####'
+		,'#####...............#####'
+		,'#####...............#####'
+		,'#####...............#####'
+		,'#########################'
+		,'#########################'
+	];
+
+	var legend = { '#':'block'
+				  ,'.':'black'
+				  ,'*':'trojan'
+				  ,'e':'exit'
+				  ,'F':'flashlight'
+				 };
+
+	map.createFromGrid(arr,legend);
+	map.placePlayer(1,6);
+	generate();
+	//use map.flash() function that make visible blocks
+	<editable>
+	<editable>
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus', 5);
+	map.checkLevelOnCountObject('exit',  1);
+	map.checkLevelOnCountObjectType('dynamic', 6);
+}
+var onExit = function(map) {};

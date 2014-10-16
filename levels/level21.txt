@@ -1,0 +1,131 @@
+//[mr-X] Да! Да! Да! Ты уже близок к разгадке всей этой истории.
+//[mr-X] Они меня держат в этом здании. Хозяин жуткий тип и психопат.
+//[mr-X] Это он придумал этот мир и забирает таких как мы для своих экспериментов.
+//[mr-X] Дрон - охранник огромный и тупой, он всегда выполняет приказы своего хозяина.
+//[mr-X] Найди вирус [☠] и покажи им всем кто здесь главный!
+//[mr-X] P.S. загляни в API, в раздел MapHackerVirus.
+
+var startLevel = function(){
+
+	map.defineObject({
+		name:'grass',  symbol:'*',
+		color: '#0f0', type:'ground'
+	});
+	
+	map.defineObject({
+		name:'bullet',  symbol:'*',
+		color: '#f0f', type:'projectile',
+		behavior:function(me){
+			me.move('down');
+		}
+	});
+	
+	map.defineObject({
+	name:'controller',
+	symbol:'F',
+	type:'dynamic',
+	color:'#f00',
+	undead:true,
+	onPlayerCollision:function(player,me){
+		if(player.getBonusCount() >= 40){
+			me.move('up');
+			map.showMessage('[Контролер] проходите!','#fff');      
+		}
+		else
+			map.showMessage('[Контролер] 40 бонусов пожалуйста.','#fff');
+	}
+	});
+	
+	map.defineObject({
+		name:'drone', symbol:'G',
+		color: '#ff0',type:'dynamic',
+		undead:true,
+		behavior:function(me){
+			//nothing
+		},
+		onPlayerCollision:function(player, me){
+		   map.showMessage('Уходите! Хозяин никого не хочет видеть.', '#fff');
+		}
+	});
+	
+	map.defineObject({
+		name:'turret', symbol:'T',
+		color: '#0ff',type:'dynamic',
+		behavior:function(me){
+			map.placeObject('bullet',me.getX(),me.getY() + 1);
+			map.placeObject('bullet',me.getX() + 1,me.getY() + 1);
+			map.placeObject('bullet',me.getX() - 1,me.getY() + 1);
+		},
+		onPlayerCollision:function(player, me){
+			player.kill(me);
+		}
+	});
+
+	map.defineObject({
+		name:'water', placeOnMe:false,
+		symbol:'~',   color: '#0ff', type:'ground',
+		onCollision:function(object){
+			if(object.type !== 'dynamic' && object.name !== 'player'){
+				object.kill();
+				return;
+			}
+			
+			if(!object.hasItem('boat'))
+				object.kill('утонул в воде');
+		}
+	});
+	
+	map.defineObject({name:'tree',symbol:'&',color: '#0f0',type:'moved'});
+
+	var arr = [
+		 '************V************'
+		,'***###################***'
+		,'*b*#*****************#*b*'
+		,'*&*#**#############**#***'
+		,'***#**####e***b####**#**&'
+		,'*T*#**####****b####**#*T*'
+		,'***#**######F######**#***'
+		,'***#*****************#&*&'
+		,'***#*****************#***'
+		,'***#########G#########***'
+		,'*&**V*&&&*******&&&****&*'
+		,'*************************'
+		,'~~~~~~~~~~~~~~~~~~~~~~~~~'
+		,'~~~~~~~~~~~~~~~~~~~~~~~~~'
+		,'~~~~~~~~~~~~~~~~~~~~~~~~~'
+		,'~~~~~~~~~~~~~~~~~~~~~~~~~'
+		,'~~~~~~~~~~~~~~~~~~~~~~~~~'
+		,'~~~~~~~~~~~~~~~~~~~~~~~~~'
+		,'~~~~~~~~~~~~~@~~~~~~~~~~~'
+		,'~~~~~~~~~~~~~~~~~~~~~~~~~'
+	];
+
+	var legend = { '#':'block'
+				,'@':'player'
+				,'*':'ground'
+				,'*':'grass'
+				,'G':'drone'
+				,'T':'turret'
+				,'e':'exit'
+				,'V':'virus'
+				,'F':'controller'
+				,'~':'water'
+				,'&':'tree'
+				,'b':'bonus'
+				};
+	map.createFromGrid(arr,legend);
+	//use virus example
+	//virus = map.createVirus();
+	//virus.infect(x,y);
+	//virus.crackBehavior(function(me){});  
+	<editable>
+	<editable>
+}
+//validator\nvar validate = function(map) {
+	map.checkLevelOnCountObject('bonus', 4);
+	map.checkLevelOnCountObject('exit',  1);
+	map.checkLevelOnCountObject('virus', 3);
+	map.checkLevelOnCountObjectType('button', 0);
+	map.checkLevelOnCountObjectType('dynamic',5);
+}
+var onExit = function(map) {};

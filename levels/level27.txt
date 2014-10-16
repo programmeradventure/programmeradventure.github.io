@@ -1,0 +1,110 @@
+var startLevel = function(){
+
+	var getRandomInt = function (min, max){
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	};
+	
+	map.defineObject({
+		name:'bulletUp', symbol:'*',
+		color: '#f00', type:'projectile',
+		behavior: function(me){
+			me.move('up');
+		}
+	});
+	
+	map.defineObject({
+		name:'bulletDown', symbol:'*',
+		color: '#f00', type:'projectile',
+		behavior: function(me){
+			me.move('down');
+		}
+	});
+	
+	var shot = function(){
+		map.placeObject('bulletUp',5,11);
+		map.placeObject('bulletUp',10,11);
+		map.placeObject('bulletUp',15,11);
+		map.placeObject('bulletUp',20,11);
+		
+		map.placeObject('bulletDown',3,0);
+		map.placeObject('bulletDown',8,0);
+		map.placeObject('bulletDown',13,0);
+		map.placeObject('bulletDown',18,0);
+	};
+
+	map.defineObject({
+		name:'lava',
+		symbol:'~',
+		color: '#BD4900',
+		type:'ground',
+		placeItem:   false,
+		placeGround: false,
+		placeMoved:  false,
+		onCollision:function(object){
+			object.kill(' Утонул в лаве.');
+		}
+	});
+	
+	map.defineObject({
+		name:'air',  symbol:'-',
+		color: '#000', type:'ground'
+	});
+
+	var arr = [
+		 '----------------------#####' 
+		,'----------------------#-km#' 
+		,'----------------------#m--#' 
+		,'----------------------#####' 
+		,'------k----k----k----------'
+		,'---#####################---' 
+		,'---------*----*----*-------' 
+		,'---------------------------' 
+		,'---------------------------' 
+		,'---------------------------' 
+		,'---------------------------' 
+		,'@-~~~~~~~~~~~~~~~~~~~~~~---'  
+		,'##~~~~~~~~~~~~~~~~~~~~~~#+#'
+		,'##~~~~~~~~~~~~~~~~~~~~~~#+#'
+		,'##~~~~~~~~~~~~~~~~~~k~~~#+#'
+		,'##~~~~~~~~~~~~~~~~~~~~~~#+#'
+		,'##~~~~~~~~~~~~~~~~~~~~~~#+#'
+		,'##~~~~~~k~~~~~~~~~~~~~~~#+#'
+		,'##~~~~~~~~~~~~~~~~k~~~~~#+#'
+		,'##~~~~~~~~~~~~~~~~~~~~~~#e#'
+		,'###########################'
+	];
+
+	var legend = { '#':'block'
+				  ,'*':'bonus'
+				  ,'e':'exit'
+				  ,'~':'lava'
+				  ,'k':'key'
+				  ,'@':'player'
+				  ,'+':'door' 
+				  ,'-':'air'
+				  ,'m':'mine'
+				 };
+				 
+	map.createFromGrid(arr,legend);
+	var player = map.getPlayer();
+	var gravity = function(){
+		player.move('down');
+	}
+	map.setTimer(gravity, 150);  
+	map.setTimer(shot, 1000);
+	<editable>
+	<editable>
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('bonus',   3);
+	map.checkLevelOnCountObject('key',     7);
+	map.checkLevelOnCountObject('exit',    1);
+	map.checkLevelOnCountObject('trojan',  0);
+	map.checkLevelOnCountObject('virus',   0);
+	map.checkLevelOnCountObjectType('dynamic', 2);
+	map.checkLevelOnCountObjectType('static',  105);
+	map.checkLevelOnCountObjectType('button',  0);
+
+}
+var onExit = function(map) {};

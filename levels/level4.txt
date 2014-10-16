@@ -1,0 +1,39 @@
+//[mr-X] Отлично! Теперь самое время заглянуть в API.
+//[mr-X] Для начала изучи раздел 'Map'.
+//[mr-X] P.S. Обрати внимание на функцию 'defineObject'.
+
+var startLevel = function(){
+	//room
+	for(var i = 0; i < 15 ; i++){
+		for(var j = 0; j < 15; j++){
+			if(i === 0 || j === 0 || i === 14 || j === 14){
+				map.placeObject('block', i, j);
+			}
+			else{
+				map.placeObject('ground', i, j);
+			}
+		}
+	};	
+	var drawDeadArea = function(){
+		for(var i = 3; i < 13 ; i++){
+			for(var j = 1; j < 14; j++){
+				map.placeObject('empty', i, j);
+			}
+		};
+	}();
+	map.placeObject('bonus',7, 1);
+	map.placeObject('bonus',7, 13);
+	map.placePlayer(1, 7);
+	map.placeObject('exit', 13, 7);
+	<editable>
+	<editable>
+}
+//validator
+var validate = function(map) {
+	map.checkLevelOnCountObject('ground', 37);
+	map.checkLevelOnCountObject('bonus', 2);
+	map.checkLevelOnCountObject('exit', 1);
+}
+var onExit = function(map) {
+	map.checkLevelOnInventory('computer');
+};
