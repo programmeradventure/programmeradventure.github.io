@@ -381,7 +381,7 @@ display:none;
 width:697px;
 }
 
-.CodeMirror-scroll {
-  overflow-y: hidden;
+#codePane {
+  overflow-y: auto;
   overflow-x: auto;
 }
