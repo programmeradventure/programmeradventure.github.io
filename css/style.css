@@ -380,3 +380,8 @@ display:none;
 #api_book_title,#api_book_body {
 width:697px;
 }
+
+.CodeMirror-scroll {
+  overflow-y: hidden;
+  overflow-x: auto;
+}
