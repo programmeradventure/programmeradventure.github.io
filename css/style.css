@@ -380,8 +380,3 @@ display:none;
 #api_book_title,#api_book_body {
 width:697px;
 }
-
-#codePane {
-  overflow-y: auto;
-  overflow-x: auto;
-}
