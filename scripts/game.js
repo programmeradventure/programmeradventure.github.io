@@ -2723,6 +2723,9 @@ var Game = function()
 					if(value === true)
 						soundPlayerHTML.pause();
 				};
+				_soundplayer.getCurrentSound = function(value){
+					return soundPlayerHTML.src;
+				};
 			};
 		//####################################################################################
 		//#############################-CodeProtector-########################################
