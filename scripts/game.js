@@ -512,7 +512,7 @@ var Game = function()
 		 	turnsOnLevelHTML.style.display = 'none';
 		 	levelPassword.style.display    = 'none';
 		 	hideEditor();
-		 	if(timer != null){
+		 	if(timer === null){
 			   timer = setInterval(map.fillMapHexCode, 33);
 			   setTimeout(showRank, 3500);
 			}
