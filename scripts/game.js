@@ -98,7 +98,7 @@ var Game = function()
 						 ,2,4,4,3,3,3,5
 						 ,1,2,2,2,2,2,4
 						 ,5,3,3,5,2,3,5,3,5];
-
+	var maxBonuses   = 85;
 	var levels       = [];
 	var passwords    = [];
 	var music        = [];
@@ -112,8 +112,8 @@ var Game = function()
 	var levelBegin   = false;
 	var GameOver     = false;
 	var projectileUpdater = null;
-	var noiseTimer   = -1;
-	var killMessage  = "";
+	var noiseTimer     = -1;
+	var killMessage    = "";
 	var currentMessage = "";
 	var firstLaunch  = true;
 	var turns        = 0;
@@ -379,6 +379,13 @@ var Game = function()
 		var _creditsScreen  = this;
 		var anyKeyPos 	 = {x:canvas.width / 2 - 120, y:610};
 		var pos 		 = canvas.height / 2  + 150;
+		var _deads = 0;
+		var _turns = 0;
+		var _bonus = 0;
+		var _rank  = 0;
+		var deads_rank = 0;
+		var bonus_rank = 0;
+		var turns_rank = 0;
 
 		var _getBonusCount = function(){
 			var sum = 0;
@@ -416,15 +423,11 @@ var Game = function()
 			return sum;
 		};
 
-		var _deads = _getDeadsCount();
-		var _turns = _getTurnsCount();
-		var _bonus = _getBonusCount();
-
 		var GetRank = function(){
-			var deads_rank = 0;
-			var bonus_rank = 0;
-			var turns_rank = 0;
-
+			_deads = _getDeadsCount();
+			_turns = _getTurnsCount();
+			_bonus = _getBonusCount();
+				
 			if(_deads < 10)
 			   deads_rank = 1;
 			else if(_deads > 10 && _deads <= 20)
@@ -464,31 +467,28 @@ var Game = function()
 				case 4: rank = "D"
 				break;
 			}
+
+			if(_bonus > maxBonuses)
+				rank = "C";//"cheater";
+
 			 return rank;
 		};
 
-		var _rank = GetRank();
-
 		var draw = function(){
+			_rank  = GetRank();
 			xcanvas.clearCanvas('#000');
 			xcanvas.drawText('36px Lucida Console','#afa', "CONGRATULATIONS!", canvas.width/2 - 150, 80);
 			xcanvas.drawText('36px Lucida Console','#aff', "Rank:", canvas.width/2 - 230, 160);
 			xcanvas.drawText('36px Lucida Console','#0f0',  _rank, canvas.width - 200, 160);
-
 			xcanvas.drawText('36px Lucida Console','#aff', "Levels:", canvas.width/2 - 230, 200);
 			xcanvas.drawText('36px Lucida Console','#0ff',  maxLevel, canvas.width - 200, 200);
-
 			xcanvas.drawText('36px Lucida Console','#aff', "Stars:", canvas.width/2 - 230, 240);
 			xcanvas.drawText('36px Lucida Console','#0ff',  _bonus, canvas.width - 200, 240);
-
 			xcanvas.drawText('36px Lucida Console','#aff', "Deads:" , canvas.width/2 - 230, 280);
 			xcanvas.drawText('36px Lucida Console','#faa',  _deads, canvas.width - 200, 280);
-
 			xcanvas.drawText('36px Lucida Console','#aff', "Total turns:" , canvas.width/2 - 230, 320);
 			xcanvas.drawText('36px Lucida Console','#faa',  _turns, canvas.width - 200, 320);
-
 			xcanvas.drawText('14px Lucida Console','#aff', "Press any key..." , canvas.width/2 - 70, canvas.height - 50);
-
 			xcanvas.drawText('36px Lucida Console','#afa', "Thank you for playing" , canvas.width/2 - 230, canvas.height - 150);
 		};
 
@@ -661,7 +661,6 @@ var Game = function()
 	   };
 
 	   _xcanvas.clearMessage = function(){
-		  //xcanvas.clearRect(0, canvas.height - 111, canvas.width, 80,"#000");
 		  context.putImageData(part,0, canvas.height - 111);
 		  currentMessage = ""; 
 		  if(messages.length > 0)
@@ -1413,8 +1412,7 @@ var Game = function()
 
 		_map.placeObject= function(name,x,y){
 
-			if(name === 'bonus')
-			{
+			if(name === 'bonus'){
 				if(_map.getObjectCount(name) === bonuses[currentLevel]){
 					_map.showMessage(Language.cheaterDetected,'#fff');
 					return;
@@ -3012,6 +3010,7 @@ var Game = function()
 	};
 
 	_game.changeLevel = function(level){
+		_game.saveGoodState();
 		level = parseInt(level.replace('level-',''));
 		currentLevel = level;
 		userExecute = false;
@@ -3263,7 +3262,8 @@ var Game = function()
 						map.draw();
 						if(!muted){
 						   map.simplePlayer.pause();
-						   map.ambientPlayer.play(music[currentLevel].sound);
+						   if(map.ambientPlayer.getCurrentSound() !== music[currentLevel].sound)
+						   	  map.ambientPlayer.play(music[currentLevel].sound);
 						}
 					}
 				}
@@ -3510,7 +3510,7 @@ var Game = function()
 
 	levels[1]  = "//[mr-X] Привет счастливчик! \n//[mr-X] Если ты попал в это место - ты как раз тот, кто мне нужен.\n//[mr-X] Я давно ищу программера, способного вытащить меня отсюда.\n//[mr-X] Я помогу тебе, если ты поможешь мне.\n//[mr-X] Всегда есть выбор - идти дальше или умереть. Выбирай.\n\nvar startLevel = function(){\n\tvar room_size = 6;\n\t//room\n\tfor(var i = 0; i < room_size * 3 ; i++){\n\t\tfor(var j = 0; j < room_size; j++){\n\t\t\tif(i === 0 || \n\t\t\t\tj === 0 || i === room_size * 3-1 || j === room_size - 1){\n\t\t\t\tmap.placeObject('block', i, j);\n\t\t\t}\n\t\t\telse{\n\t\t\t\tmap.placeObject('ground', i, j);\n\t\t\t}\n\t\t}\n\t};\n\tmap.placeObject('mine', 1, 4);\n\t//walls\n\tmap.placeObject('block', room_size, 1);\n\tmap.placeObject('movedBlock', room_size, 2);\n\tmap.placeObject('block', room_size, 3);\n\tmap.placeObject('block', room_size, 4);\n\tmap.placeObject('block', room_size*2, 1);\n\tmap.placeObject('block', room_size*2, 2);\n\tmap.placeObject('block', room_size*2, 3);\n\tmap.placeObject('block', room_size*2, 4);\n\t//objects\n\tmap.placeButton(11,4,room_size*2,2);\n\tmap.placeObject('exit', 16, 10);\n\tmap.placeObject('computer', 16, 1);\n\tmap.placeObject('bonus', 16, 4);\n\tmap.placePlayer(2,2);\n\t<editable>\n\t<editable>\n}\n//validator\nvar validate = function(map) {\n\tmap.checkLevelOnCountObject('computer', 1);\n\tmap.checkLevelOnCountObject('bonus', 1);\n}\nvar onExit = function(map) {\n\tmap.checkLevelOnInventory('computer');\n};";
 	levels[2]  = "//[mr-X] О! Я вижу ты сделал правильный выбор.\n//[mr-X] Продолжай в том же духе и мы сбежим отсюда.\n//[mr-X] P.S. Эти синие блоки здорово взрывают мины. Попробуй.\n\nvar startLevel = function(){\n\tvar room_size = 6;\n\t//room\n\tfor(var i = 0; i < room_size * 2 ; i++){\n\t\tfor(var j = 0; j < room_size; j++){\n\t\t\tif(i === 0 || \n\t\t\t\tj === 0 || i === room_size * 2-1 || j === room_size - 1){\n\t\t\t\tmap.placeObject('block', i, j);\n\t\t\t}\n\t\t\telse{\n\t\t\t\tmap.placeObject('ground', i, j);\n\t\t\t}\n\t\t}\n\t};\n\t<editable>\n\t//mines\n\tfor(var i = 1; i < 5 ; i++){\n\t\tmap.placeObject('mine', 5, i);\n\t\tmap.placeObject('mine', 8, i);\n\t}\n\t<editable>\n\t//wall\n\tfor(var i = 1; i < 5 ; i++)\n\t\tmap.placeObject('block', 9, i);\n\t\n\tmap.placePlayer(2,2);\n\tmap.placeButton(7,4,9,1);\n\tmap.placeObject('bonus', 10, 1);\n\tmap.placeObject('movedBlock',3 , 2);\n\tmap.placeObject('exit', 10, 3);\n\tmap.placeObject('notepad', 6, 3);\n}\n//validator\nvar validate = function(map) {\n\tmap.checkLevelOnCountObject('bonus',1);\n\tmap.checkLevelOnCountObject('exit',1);\n\tmap.checkLevelOnCountObjectType('moved',1);\n}\nvar onExit = function(map) {\n\tmap.checkLevelOnInventory('notepad');\n\tmap.checkLevelOnInventory('computer');\n};";
-	levels[3]  = "//[mr-X] Хорошо, теперь посмотрим, как ты справишься с более сложной задачей.\n//[mr-X] P.S. Собирай звезды, они тебе пригодятся.\n\nvar startLevel = function(){\n\tvar arr = [\n\t\t '###############'\n\t\t,'#*m.........m*#'\n\t\t,'#mm.........mm#'\n\t\t,'#.............#'\n\t\t,'#.............#'\n\t\t,'#.............#'\n\t\t,'#.............#'\n\t\t,'#......@.....e#'\n\t\t,'#.............#'\n\t\t,'#.............#'\n\t\t,'#.............#'\n\t\t,'#.............#'\n\t\t,'#mm.........mm#'\n\t\t,'#*m.........m*#'\n\t\t,'###############'\n\t];\n\tvar legend = {'#':'block','@':'player','.':'ground','*':'bonus','m':'mine','e':'exit'};\n\tmap.createFromGrid(arr,legend);    \n\t<editable>\n\tfor(var i = 5; i < 10 ; i++){\n\t\tfor(var j = 5; j < 10; j++){\n\t\t\tif(i === 5 || j === 5 || i === 9 || j === 9){\n\t\t\t\tmap.placeObject('mine', i, j);\n\t\t\t}\n\t\t}\n\t}\n\t<editable>\n}\n//validator\nvar validate = function(map) {\n\tmap.checkLevelOnCountObject('bonus', 4);\n\tmap.checkLevelOnCountObject('exit', 1);\n}\nvar onExit = function(map) {};";
+	levels[3]  = "//[mr-X] Хорошо, теперь посмотрим, как ты справишься с более сложной задачей.\n//[mr-X] P.S. Собирай звезды, они тебе пригодятся.\n\nvar startLevel = function(){\n\tvar arr = [\n\t\t '###############'\n\t\t,'#*m.........m*#'\n\t\t,'#mm.........mm#'\n\t\t,'#.............#'\n\t\t,'#.............#'\n\t\t,'#.............#'\n\t\t,'#.............#'\n\t\t,'#......@.....e#'\n\t\t,'#.............#'\n\t\t,'#.............#'\n\t\t,'#.............#'\n\t\t,'#.............#'\n\t\t,'#mm.........mm#'\n\t\t,'#*m.........m*#'\n\t\t,'###############'\n\t];\n\tvar legend = {'#':'block','@':'player','.':'ground'\n\t\t\t\t ,'*':'bonus','m':'mine','e':'exit'};\n\tmap.createFromGrid(arr,legend);\n\t<editable>\n\tfor(var i = 5; i < 10 ; i++){\n\t\tfor(var j = 5; j < 10; j++){\n\t\t\tif(i === 5 || j === 5 || i === 9 || j === 9){\n\t\t\t\tmap.placeObject('mine', i, j);\n\t\t\t}\n\t\t}\n\t}\n\t<editable>\n}\n//validator\nvar validate = function(map) {\n\tmap.checkLevelOnCountObject('bonus', 4);\n\tmap.checkLevelOnCountObject('exit', 1);\n}\nvar onExit = function(map) {};";
 	levels[4]  = "//[mr-X] Отлично! Теперь самое время заглянуть в API.\n//[mr-X] Для начала изучи раздел 'Map'.\n//[mr-X] P.S. Обрати внимание на функцию 'defineObject'.\n\nvar startLevel = function(){\n\t//room\n\tfor(var i = 0; i < 15 ; i++){\n\t\tfor(var j = 0; j < 15; j++){\n\t\t\tif(i === 0 || j === 0 || i === 14 || j === 14){\n\t\t\t\tmap.placeObject('block', i, j);\n\t\t\t}\n\t\t\telse{\n\t\t\t\tmap.placeObject('ground', i, j);\n\t\t\t}\n\t\t}\n\t};\t\n\tvar drawDeadArea = function(){\n\t\tfor(var i = 3; i < 13 ; i++){\n\t\t\tfor(var j = 1; j < 14; j++){\n\t\t\t\tmap.placeObject('empty', i, j);\n\t\t\t}\n\t\t};\n\t}();\n\tmap.placeObject('bonus',7, 1);\n\tmap.placeObject('bonus',7, 13);\n\tmap.placePlayer(1, 7);\n\tmap.placeObject('exit', 13, 7);\n\t<editable>\n\t<editable>\n}\n//validator\nvar validate = function(map) {\n\tmap.checkLevelOnCountObject('ground', 37);\n\tmap.checkLevelOnCountObject('bonus', 2);\n\tmap.checkLevelOnCountObject('exit', 1);\n}\nvar onExit = function(map) {\n\tmap.checkLevelOnInventory('computer');\n};";
 	levels[5]  = "//[mr-X] Вижу схватываешь на лету!\n//[mr-X] Посмотрим, как ты выполнишь задачу без моей помощи ;).\n//[mr-X] P.S. Читай таблички [!] они иногда здорово помогают.\n\nvar startLevel = function(){\n\tvar color = '#000';\n\t\n\tvar getRandomInt = function (min, max){\n\t\treturn Math.floor(Math.random() * (max - min + 1)) + min;\n\t}\n\t<editable>\n\t<editable>\n\n\t//floor\n\tmap.defineObject({\n\t\tname:'floor',\n\t\tsymbol:'.',\n\t\tcolor: color,\n\t\ttype:'ground'\n\t});\n\n\t//note\n\tmap.defineObject({\n\t\tname:'note',\n\t\tsymbol:'!',\n\t\tcolor:'#f0f',\n\t\ttype:'ground',\n\t\tonPlayerCollision: function(player, me){\n\t\t\tmap.showMessage(\n\t\t\t'[надпись] Только верующий сможет пройти дальше.','#0f0');\n\t\t}\n\t});\n\t\n\t//room\n\tfor(var i = 0; i < 15 ; i++){\n\t\tfor(var j = 0; j < 15; j++){\n\t\t\tif(i === 0 || j === 0 || i === 14 || j === 14){\n\t\t\t\tmap.placeObject('block', i, j);\n\t\t\t}\n\t\t\telse{\n\t\t\t\tmap.placeObject('ground', i, j);\n\t\t\t}\n\t\t} \n\t}; \n\t\n\tvar drawDeadArea = function(){\n\t\tfor(var i = 3; i < 12 ; i++){\n\t\t\tfor(var j = 1; j < 14; j++){\n\t\t\t\tmap.placeObject('empty', i, j);\n\t\t\t} \n\t\t};\n\t}(); \n\t\n\tvar trust = function(){\n\t\tvar n = getRandomInt(1, 12);\n\t\tfor(var i = 3; i < 12 ; i++){\n\t\t\tmap.placeObject('floor', i, n);\n\t\t};\n\t}();\n\t\n\tmap.placeObject('note',2, 7); \n\tmap.placeObject('bonus',13, 8);  \n\tmap.placePlayer(1, 7);\n\tmap.placeObject('exit', 13, 7);\n}\n//validator\nvar validate = function(map) {\n\tmap.checkLevelOnCountObject('bonus', 1);\n\tmap.checkLevelOnCountObject('exit', 1);\n\tmap.checkLevelOnCountObjectType('ground',60);\n}\nvar onExit = function(map) {\n\tmap.checkLevelOnInventory('computer');\n};";
 	levels[6]  = "//[mr-X] Посмотри на этих охранников, это же отъявленные убийцы.\n//[mr-X] Тебе срочно нужно что-то придумать, иначе они тебя убьют.\n//[mr-X] P.S. удачи ;)\n\nvar startLevel = function(){\n\t//AI :)\n\tvar moveToward = function(obj,trg) {\n\t\tvar target   = obj.findNearestToPoint(trg);\n\t\tvar leftDist = obj.getX() - target.x;\n\t\tvar upDist   = obj.getY() - target.y;\n\t\tvar direction;\n\t\t\n\t\tif (upDist == 0 && leftDist == 0)\n\t\t\treturn;\n\n\t\tif (upDist > 0 && upDist >= leftDist)\n\t\t\tdirection = 'up';\n\t\telse if (upDist < 0 && upDist < leftDist)\n\t\t\tdirection = 'down';\n\t\telse if (leftDist > 0 && leftDist >= upDist)\n\t\t\tdirection = 'left';\n\t\telse\n\t\t\tdirection = 'right';\n\n\t\tobj.move(direction);\n\t}\n\n\tmap.defineObject({\n\t\tname:'guard',\n\t\tsymbol:'G',\n\t\tcolor: '#f00', \n\t\ttype:'dynamic',\n\t\tonPlayerCollision:function(player, me){\n\t\t\tplayer.kill(me);\n\t\t},\n\t\tbehavior:function(me){\n\t\t\tmoveToward(me,'player');\n\t\t} \n\t}); \n\n\tvar arr = [\n\t\t '############'\n\t\t,'#....*.....#'\n\t\t,'#..........#'\n\t\t,'#..........#'\n\t\t,'#..........#'\n\t\t,'#.......G..#'\n\t\t,'#.@.....G.e#'\n\t\t,'#.......G..#'\n\t\t,'#..........#'\n\t\t,'#..........#'\n\t\t,'#.......*..#'\n\t\t,'############'\n\t]; \n\t   \n\tvar legend = {\t'#':'block'\n\t\t\t\t  ,'@':'player'\n\t\t\t\t  ,'.':'ground'\n\t\t\t\t  ,'*':'bonus'\n\t\t\t\t  ,'G':'guard'\n\t\t\t\t  ,'e':'exit'\n\t\t\t\t };\n\tmap.createFromGrid(arr,legend);\n\t<editable>\n\t<editable>\n}\n//validator\nvar validate = function(map) {\n\tmap.checkLevelOnCountObject('exit' , 1);\n\tmap.checkLevelOnCountObject('bonus', 2);\n}\nvar onExit = function(map) {\n\treturn map.checkLevelOnInventory('computer');\n};";

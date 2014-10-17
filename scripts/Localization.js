@@ -117,13 +117,13 @@
                 {category:"MapScanner",name:"map.getObjectsCoords(name)",desc:"Возвращает массив координат всех объектов с именем 'name'."},
                 {category:"MapScanner",name:"map.getObjectCount(name)",desc:"Возвращает количество объектов с именем 'name'."},
                 
-                {category:"MapHackerTrojan",name:"map.createTrojan()",desc:"Создает троянскую программу и возвращает объект trojan.(Необходимо иметь объект 'trojan' в инвентаре.)"},
+                {category:"MapHackerTrojan",name:"map.createTrojan()",desc:"Создает троянскую программу и возвращает объект trojan.(Необходимо иметь объект 'trojan' в инвентаре.) Исчезает после применения."},
                 {category:"MapHackerTrojan",name:"trojan.setTarget(name)",desc:"Устанавливает цель трояна - объекты с именем 'name'."},
                 {category:"MapHackerTrojan",name:"trojan.changeColor(value)",desc:"Устанавливает цвет зараженных объектов."},
                 {category:"MapHackerTrojan",name:"trojan.changeSymbol(value)",desc:"Устанавливает символ зараженных объектов."},
                 {category:"MapHackerTrojan",name:"trojan.setMortal()",desc:"Устанавливает атрибут undead в false, делая объект смертным (только для типа dynamic)"},
 
-                {category:"MapHackerVirus",name:"map.createVirus()",desc:"Создает вирусную программу и возвращает объект virus.(Необходимо иметь объект 'virus' в инвентаре.)"},
+                {category:"MapHackerVirus",name:"map.createVirus()",desc:"Создает вирусную программу и возвращает объект virus.(Необходимо иметь объект 'virus' в инвентаре.) Исчезает после применения."},
                 {category:"MapHackerVirus",name:"virus.infect(x,y)",desc:"Инфицирует объект в точке [x,y]. (Действует только на тип 'dynamic'.)"},
                 {category:"MapHackerVirus",name:"virus.crackBehavior(newBehavior)",desc:"Взлом поведенческой функции ('behavior') объекта и замена ее на свою."},
 
