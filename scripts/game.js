@@ -2699,7 +2699,6 @@ var Game = function()
 				var mute = false;
 				_soundplayer.play = function(sound){
 					if(!mute){
-					  currentSound = sound;
 					  soundPlayerHTML.src = sound;
 					  soundPlayerHTML.type = audioType;
 					  soundPlayerHTML.play();
@@ -3256,8 +3255,9 @@ var Game = function()
 					levelBegin = false;
 					map.drawLevelTitle("Level " + currentLevel + " Password:" + passwords[parseInt(currentLevel)]);
 					passwordField.value = passwords[parseInt(currentLevel)];
-					if(!muted)
+					if(!muted){
 					   map.ambientPlayer.play(music[currentLevel].sound);
+					}
 					else
 					   map.ambientPlayer.setSound(music[currentLevel].sound);
 				}
@@ -3267,8 +3267,6 @@ var Game = function()
 						map.draw();
 						if(!muted){
 						   map.simplePlayer.pause();
-						   if(map.ambientPlayer.getCurrentSound() !== music[currentLevel].sound)
-						   	  map.ambientPlayer.play(music[currentLevel].sound);
 						}
 					}
 				}
