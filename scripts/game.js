@@ -502,6 +502,9 @@ var Game = function()
 		};
 
 		_creditsScreen.play   = function(){
+			clearTimeout(clearmessageTimer);
+			messages  = [];
+		    isMessageQueueWork = false;
 			theEnd = true;
 			musicTitleHTML.style.display   = 'none';
 		 	levelFooterHTML.style.display  = 'none';
