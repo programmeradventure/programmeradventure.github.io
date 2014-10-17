@@ -190,7 +190,7 @@ var Game = function()
 
 	var drawCursorPos = function(evt) {
       var mousePos = getMousePos(canvas, evt);
-      var message = 'pos: [ ' + parseInt(mousePos.x / 20) + ' : ' + parseInt((mousePos.y - 20) / 20) + ' ]';
+      var message = 'pos: [ ' + Math.round(mousePos.x / 20) + ' : ' + Math.round((mousePos.y - 20) / 20) + ' ]';
       var x = 5;
 	  var y = canvas.height - 150;
 	  	if(!theEnd)
