@@ -124,7 +124,6 @@ var Game = function()
 	var fromPassword = false;
 	var isMessageQueueWork = false;
 	var clearmessageTimer = null;
-	var currentSound = "";
 
 	prevLevelsolutionURL.style.marginLeft = window_innerWidth/2+'px';
 	levelFooterHTML.style.display = 'none';
@@ -2723,9 +2722,6 @@ var Game = function()
 					mute = value;
 					if(value === true)
 						soundPlayerHTML.pause();
-				};
-				_soundplayer.getCurrentSound = function(value){
-					return currentSound;
 				};
 			};
 		//####################################################################################
