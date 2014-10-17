@@ -124,6 +124,7 @@ var Game = function()
 	var fromPassword = false;
 	var isMessageQueueWork = false;
 	var clearmessageTimer = null;
+	var currentSound = "";
 
 	prevLevelsolutionURL.style.marginLeft = window_innerWidth/2+'px';
 	levelFooterHTML.style.display = 'none';
@@ -2696,7 +2697,6 @@ var Game = function()
 				var _soundplayer = this;
 				var soundPlayerHTML = element;
 				var mute = false;
-				var currentSound = "";
 				_soundplayer.play = function(sound){
 					if(!mute){
 					  currentSound = sound;
