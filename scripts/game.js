@@ -3263,6 +3263,7 @@ var Game = function()
 						map.draw();
 						if(!muted){
 						   map.simplePlayer.pause();
+						   map.ambientPlayer.continue();
 						}
 					}
 				}
