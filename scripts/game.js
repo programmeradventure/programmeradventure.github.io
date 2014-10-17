@@ -2696,8 +2696,10 @@ var Game = function()
 				var _soundplayer = this;
 				var soundPlayerHTML = element;
 				var mute = false;
+				var currentSound = "";
 				_soundplayer.play = function(sound){
 					if(!mute){
+					  currentSound = sound;
 					  soundPlayerHTML.src = sound;
 					  soundPlayerHTML.type = audioType;
 					  soundPlayerHTML.play();
@@ -2724,7 +2726,7 @@ var Game = function()
 						soundPlayerHTML.pause();
 				};
 				_soundplayer.getCurrentSound = function(value){
-					return soundPlayerHTML.src;
+					return currentSound;
 				};
 			};
 		//####################################################################################
