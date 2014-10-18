@@ -2062,11 +2062,10 @@ var Game = function()
 					if(turn != turns)
 					{
 						turn = turns;
-						direct = 'nothing';
+						direct = direction;
 						var newCoords = getNextStepCoords(direction,pos);
 						if(_liveObject.canMoveCoords(newCoords.x,newCoords.y))
 						{   
-							direct = direction;
 							if(!dead){
 								var teleportate = false;
 								if(getItem(newCoords.x,newCoords.y) === 'teleport')
@@ -2094,6 +2093,8 @@ var Game = function()
 								}
 							}
 						}
+						else
+							direct = 'nothing';	
 					}
 					else
 						map.showMessage(Language.error10 + "[" +_liveObject.name + "]",'#fff');
