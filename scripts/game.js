@@ -2926,12 +2926,15 @@ var Game = function()
 	};
 
 	_game.reset = function(){
-		playState = new playScreen();
-		codeEditor.loadLevelCode(levels[currentLevel]);
-		GameOver = false;
-		userExecute = false;
-		state = 'play';
-		_game.play();
+		if (confirm("RESET ?")) {
+		  	playState = new playScreen();
+		    codeEditor.loadLevelCode(levels[currentLevel]);
+		    GameOver = false;
+		    userExecute = false;
+		    state = 'play';
+		    _game.play();
+		} else 
+		    return;
 	};
 
 	_game.phone = function(){
