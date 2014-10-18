@@ -190,7 +190,7 @@ var Game = function()
 
 	var drawCursorPos = function(evt) {
       var mousePos = getMousePos(canvas, evt);
-      var message = 'pos: [ ' + Math.round(mousePos.x / 20) + ' : ' + Math.round((mousePos.y - 20) / 20) + ' ]';
+      var message = 'pos: [ ' + Math.floor(mousePos.x / 20) + ' : ' + Math.floor((mousePos.y - 20) / 20) + ' ]';
       var x = 5;
 	  var y = canvas.height - 150;
 	  	if(!theEnd)
@@ -627,7 +627,7 @@ var Game = function()
 	   _xcanvas.drawSymbol = function(x,y,o){
 		  context.font       = mainFont;
 		  context.fillStyle  = o.color;
-		  if(o.name === 'virus' || o.name === 'trojan')
+		  if(o.name === 'virus' || o.name === 'trojan' || o.name === 'phone')
 		  	 context.fillText(o.symbol, x, y-5);
 		  else if (o.symbol === String.fromCharCode(0x23C5))
 		  {
@@ -2062,10 +2062,11 @@ var Game = function()
 					if(turn != turns)
 					{
 						turn = turns;
-						direct = direction;
+						direct = 'nothing';
 						var newCoords = getNextStepCoords(direction,pos);
 						if(_liveObject.canMoveCoords(newCoords.x,newCoords.y))
 						{   
+							direct = direction;
 							if(!dead){
 								var teleportate = false;
 								if(getItem(newCoords.x,newCoords.y) === 'teleport')
