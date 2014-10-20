@@ -1332,6 +1332,7 @@ var Game = function()
 			}
 			context.putImageData(pixels,0,0,0,0,canvas.width,canvas.height);
 			xcanvas.drawText('12pt Lucida Console' ,'#000', Language.tryAgain, 5 , canvas.height/2);
+			xcanvas.drawText('12pt Lucida Console' ,'#000', Language.tryAgain2, canvas.width/2 + 100 , canvas.height/2 + 20);
 		};
 
 		var letters = Array(256).join(1).split(''); 

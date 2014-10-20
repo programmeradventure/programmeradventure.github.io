@@ -67,7 +67,8 @@
     notepadNotFound:"У вас нет блокнота!",
     clockItemNotFound: "У вас нет часов!",
     infiniteLoop:"время выполнения цикла >",
-    tryAgain:"Попробуйте еще раз...[нажмите кнопку 'Execute' или 'CTRL + 4']",
+    tryAgain:"Попробуйте еще раз...[нажмите кнопку 'Execute']",
+    tryAgain2:' или [CTRL + 4]',
     originalIdea:'original idea <a href = http://alexnisnevich.github.io/untrusted> Untrusted </a> by Alex Nisnevich and Greg Shuflin',
 
     scroll1Text:"Свиток 1: Ты останешься здесь навсегда! (рассыпался)",
