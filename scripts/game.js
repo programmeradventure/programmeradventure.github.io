@@ -1331,7 +1331,7 @@ var Game = function()
 				pixels.data[i + 3] = Math.floor((254-155)*Math.random()) + 156;
 			}
 			context.putImageData(pixels,0,0,0,0,canvas.width,canvas.height);
-			xcanvas.drawText('14pt Lucida Console' ,'#000', Language.tryAgain, 50 , canvas.height/2);
+			xcanvas.drawText('12pt Lucida Console' ,'#000', Language.tryAgain, 50 , canvas.height/2);
 		};
 
 		var letters = Array(256).join(1).split(''); 
