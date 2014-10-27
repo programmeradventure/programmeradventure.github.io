@@ -75,7 +75,7 @@ var CodeEditor = function () {
 			while(editStrings.indexOf(a) !== -1)
 				a++;
 			return a;
-   		}
+   		};
 
    		var removeElement = function(arr, elem) {
    			for(var i = arr.length; i--;) {
@@ -83,57 +83,68 @@ var CodeEditor = function () {
 		            arr.splice(i, 1);
 		        }
 		    }
-   		}
+   		};
+
+   		var inEditableArea = function(c) {
+            var lineNum = c.to.line;
+            if (editStrings.indexOf(lineNum) !== -1 && editStrings.indexOf(c.from.line) !== -1)          	
+                return true;
+            
+			return false;
+        };
 
 		var process = function(me, change){
+			if(!inEditableArea(change)){
+				change.cancel();
+				return;
+			}
 
 			var newLines = change.text.length - (change.to.line - change.from.line + 1);
 			var currentLine = change.to.line;
 
-				if(isReadOnly(currentLine))
-		        {
-		        	change.cancel();
-		        	return;
-		        }
+			if(isReadOnly(currentLine)){
+	        	change.cancel();
+	        	return;
+	        }
 
-					//cut off 80 chars
-		        var textlen = me.getLine(currentLine).length;
-		        if (textlen + change.text[0].length > LIMIT) {
-		             var allowedLength = Math.max(LIMIT - textlen, 0);
-		                change.text[0] = change.text[0].substr(0, allowedLength);
-		        }
+				//cut off 80 chars
+	        var textlen = me.getLine(currentLine).length;
+	        if (textlen + change.text[0].length > LIMIT) {
+	             var allowedLength = Math.max(LIMIT - textlen, 0);
+	                change.text[0] = change.text[0].substr(0, allowedLength);
+	        }
 
-				if(newLines > 0){
-					//onNewLines
-						var bound = getEndWritableBlock(currentLine);
-						editStrings = shiftElements(editStrings, bound, newLines);
-						for (var i = bound; i < bound + newLines; i++) {
-		            			editStrings.push(i);
-		        		}
+			if(newLines > 0){
+				//onNewLines
+					var bound = getEndWritableBlock(currentLine);
+					editStrings = shiftElements(editStrings, bound, newLines);
+					for (var i = bound; i < bound + newLines; i++) {
+	            			editStrings.push(i);
+	        		}
 
-		        		editStrings.sort();
-				}
-				else if(change.to.line < change.from.line || change.to.line - change.from.line + 1 > change.text.length){
-					//onDeleteLines
-						var count = change.to.line - change.from.line - change.text.length + 1;
-						var bound = getEndWritableBlock(currentLine);
+	        		editStrings.sort();
+			}
+			else if(change.to.line < change.from.line || change.to.line - change.from.line + 1 > change.text.length){
+				//onDeleteLines
+					var count = change.to.line - change.from.line - change.text.length + 1;
+					var bound = getEndWritableBlock(currentLine);
 
-						var begin = bound - 1;
-						var end   = bound - (count + 1);
+					var begin = bound - 1;
+					var end   = bound - (count + 1);
 
-						if(isReadOnly(begin-1))
-						{
-							change.cancel();
-		        			return;
-						}
+					if(isReadOnly(begin-1))
+					{
+						change.cancel();
+	        			return;
+					}
 
-						for (var i = begin; i > end; i--) {
-	            			removeElement(editStrings,i);
-	       				}
+					for (var i = begin; i > end; i--) {
+            			    removeElement(editStrings,i);
+       				}
 
-	       				editStrings = shiftElements(editStrings, bound, -count);
-						editStrings.sort();
-				}
+       				editStrings = shiftElements(editStrings, bound, -count);
+					editStrings.sort();
+			}
 		};
 
 		self.loadLevelCode = function(code){	
