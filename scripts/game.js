@@ -2831,8 +2831,6 @@ var Game = function()
 					   }
 					}
 
-					callEvent("validate");
-
 					for(var i = _mapProtectedMethods.length; --i >= 0;){
 					   var propName = _mapProtectedMethods[i];
 					   if(_map.hasOwnProperty(propName)){
@@ -2850,6 +2848,8 @@ var Game = function()
 						  }
 					   }
 					}
+
+					callEvent("validate");
 
 					for(var i = warnings.length; --i >= 0;){
 					   throw Language.error6 + " [line " + (warnings[i].num + 1) + ": " + warnings[i].word + "]";
